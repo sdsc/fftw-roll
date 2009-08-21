@@ -3,7 +3,7 @@
 <graph>
 
   <description>
-   FFTW based on PGI Compilers
+   FFTW based on PGI, INTEL Compilers
   </description>
 
   <copyright>
@@ -13,6 +13,9 @@
 
   <changelog>
   $Log$
+  Revision 1.1  2009/08/21 11:53:34  mahidhar
+  Added Intel versions of NETCDF, NCO
+
   Revision 1.1  2009/06/03 11:53:37  mahidhar
   Added files for FFTW 3.2.1 roll with PGI compilers.
 
@@ -23,4 +26,8 @@
   <edge from="base">
     <to>fftw_pgi-common</to>
   </edge>
+  <edge from="base">
+    <to>fftw_intel-common</to>
+  </edge>
+
 </graph>
