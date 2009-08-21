@@ -1,4 +1,4 @@
-ROLLNAME = fftw_pgi
+ROLLNAME = fftw
 RELEASE = 321
 COLOR   = orange
 REDHAT.ROOT = $(PWD)
