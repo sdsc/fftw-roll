@@ -3,7 +3,7 @@
 <graph>
 
   <description>
-   FFTW based on PGI, INTEL Compilers
+  FFTW libraries
   </description>
 
   <copyright>
@@ -12,22 +12,30 @@
   </copyright>
 
   <changelog>
-  $Log$
-  Revision 1.1  2009/08/21 11:53:34  mahidhar
-  Added Intel versions of NETCDF, NCO
-
-  Revision 1.1  2009/06/03 11:53:37  mahidhar
-  Added files for FFTW 3.2.1 roll with PGI compilers.
-
-  Revision 1.1  2009/05/06 23:39:01  mahidhar
-  *** empty log message ***
-
   </changelog>
+
   <edge from="base">
+    <to>fftw_gnu-common</to>
+  </edge>
+
+  <edge from="intel-compilers-common">
+    <to>fftw_intel-common</to>
+  </edge>
+
+  <edge from="pgi-common">
     <to>fftw_pgi-common</to>
   </edge>
-  <edge from="base">
-    <to>fftw_intel-common</to>
+
+  <edge from="fftw_gnu-common">
+    <to>fftw-modules-common</to>
+  </edge>
+
+  <edge from="fftw_intel-common">
+    <to>fftw-modules-common</to>
+  </edge>
+
+  <edge from="fftw_pgi-common">
+    <to>fftw-modules-common</to>
   </edge>
 
 </graph>

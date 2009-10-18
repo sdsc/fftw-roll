@@ -1,0 +1,51 @@
+<?xml version="1.0" standalone="no"?>
+
+<kickstart>
+
+<description>
+FFTW library
+http://www.fftw.org
+</description>
+
+<copyright>
+Copyright (c) 2000 - 2008 The Regents of the University of California.
+All rights reserved. Rocks(r) v5.1 www.rocksclusters.org
+</copyright>
+
+<changelog>
+</changelog>
+
+<post>
+
+if test -d /opt/modulefiles; then
+
+  /bin/mkdir -m 0755 -p /opt/modulefiles/applications/fftw
+
+<file name="/opt/modulefiles/applications/fftw/3.2.1" perms="0644">
+#%Module1.0
+set fftwHome /opt/fftw
+set compiler [expr ! [catch {exec which icc} ignored] ? {"intel"} : \
+                   ! [catch {exec which pgcc} ignored] ? {"pgi"} : {"gnu"}]
+set libsubdir [expr {$compiler} == {"gnu"} ? {""} : {"/$compiler"}]
+module-whatis "fftw"
+module-whatis "Version: 3.2.1"
+module-whatis "Description: fftw"
+module-whatis "Compiler:$compiler Parallel library: none Math Library: none"
+prepend-path PATH $fftwHome/bin
+prepend-path LD_LIBRARY_PATH $fftwHome/lib$libsubdir
+prepend-path LIBPATH $fftwHome/lib$libsubdir
+</file>
+
+<file name="/opt/modulefiles/applications/fftw/.version.3.2.1">
+#%Module1.0
+set ModulesVersion "3.2.1"
+</file>
+
+  /bin/ln -s /opt/modulefiles/applications/fftw/.version.3.2.1 \
+             /opt/modulefiles/applications/fftw/.version
+
+fi
+
+</post>
+
+</kickstart>

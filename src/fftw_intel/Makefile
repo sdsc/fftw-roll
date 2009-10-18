@@ -55,72 +55,49 @@
 # @Copyright@
 #
 # $Log$
-# Revision 1.1  2009/08/21 10:31:07  mahidhar
-# Checking in changes to fftw roll to include intel version.
-#
-# Revision 1.1  2009/06/03 11:53:37  mahidhar
-# Added files for FFTW 3.2.1 roll with PGI compilers.
-#
-# Revision 1.2  2009/05/13 21:18:27  jhayes
-# Add missing files + fix a Makefile bug.
-#
-# Revision 1.1  2009/05/06 23:39:01  mahidhar
-# *** empty log message ***
-#
-# Revision 1.7  2009/04/28 18:23:47  jhayes
-# Remove disused include.
-#
-# Revision 1.6  2009/04/15 16:50:26  jhayes
-# Allow specification of per-service monitoring timeperiod.  Remove copying of
-# sample configuration to target.
-#
-# Revision 1.5  2009/03/27 22:58:28  jhayes
-# Debugging.
-#
-# Revision 1.4  2009/03/26 21:26:50  jhayes
-# Begin working on using rocks command to manipulate nagios config.
-#
-# Revision 1.3  2009/03/13 19:07:55  jhayes
-# Clean up node XML and Makefile.
-#
-# Revision 1.2  2009/03/12 18:44:35  jhayes
-# Initial version working on triton.
-#
-# Revision 1.1  2009/02/05 18:36:05  bruno
-# added
+# Revision 1.2  2009/10/18 19:10:42  jhayes
+# Added gnu version.  Move installation to /opt/fftw.  Clean up for release.
 #
 #
 
-PKGROOT = /opt/intel/fftw_intel
-NAMES1 = fftw_pgi
+PKGROOT = /opt/fftw
+SOURCE = fftw-$(VERSION)
 REDHAT.ROOT = $(PWD)/../../
 RPM.EXTRAS=%define __os_install_post /usr/lib/rpm/brp-compress
 
 -include $(ROCKSROOT)/etc/Rules.mk
 
+COMPILE_FLAGS = -O3
+
+INTEL_BASE = /opt/intel/Compiler/11.1/046
+C_INTEL_ENV = $(INTEL_BASE)/bin/intel64/iccvars_intel64.sh
+F_INTEL_ENV = $(INTEL_BASE)/bin/intel64/ifortvars_intel64.sh
+INTEL_LICENSE_FILE = /opt/flexlm/license/license-intel.txt
+
 build:
-	mkdir -p $(ROOT)/$(PKGROOT)
-	(tardir=`pwd`; \
-         mkdir -p $(ROOT)/$(PKGROOT); \
-	 cd $(ROOT)/$(PKGROOT); \
-	 tar zxvf $${tardir}/$(NAME).$(VERSION).tar.gz)
+	tar zxvf $(REDHAT.ROOT)/src/$(SOURCE).tgz
 	( \
-	  cd $(ROOT)/$(PKGROOT)/$(NAME).$(VERSION); \
-          export CC=icc ; \
-          export F77=ifort ; \
-          export CFLAGS='-O3' ;\
-          export FFLAGS='-O3' ;\
-          ./configure --prefix=$(PKGROOT) --enable-openmp; \
-         make ; \
+	  . $(C_INTEL_ENV); \
+	  . $(F_INTEL_ENV); \
+	  export INTEL_LICENSE_FILE=$(INTEL_LICENSE_FILE); \
+	  export CC=icc; \
+	  export CFLAGS="$(COMPILE_FLAGS)"; \
+	  export F77=ifort; \
+	  export FFLAGS="$(COMPILE_FLAGS)"; \
+	  cd $(SOURCE); \
+	  ./configure --prefix=$(PKGROOT) --enable-openmp; \
+	  make \
 	)
 
 install::
 	mkdir -p $(ROOT)/$(PKGROOT)
 	( \
-	  cd $(ROOT)/$(PKGROOT)/$(NAME).$(VERSION); \
-	  make prefix=$(ROOT)/$(PKGROOT) install; \
-          cd ../ ; \
-          rm -rf $(NAME).$(VERSION) ; \
+	  cd $(SOURCE); \
+	  make prefix=$(ROOT)/$(PKGROOT) install \
 	)
+	mv $(ROOT)/$(PKGROOT)/lib $(ROOT)/$(PKGROOT)/intellib
+	mkdir $(ROOT)/$(PKGROOT)/lib
+	mv $(ROOT)/$(PKGROOT)/intellib $(ROOT)/$(PKGROOT)/lib/intel
+
 clean::
-	rm -rf $(ROOT)/$(PKGROOT)
+	rm -rf $(SOURCE)

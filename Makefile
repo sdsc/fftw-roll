@@ -55,17 +55,8 @@
 # @Copyright@
 #
 # $Log$
-# Revision 1.1  2009/06/03 11:53:37  mahidhar
-# Added files for FFTW 3.2.1 roll with PGI compilers.
-#
-# Revision 1.1  2009/05/06 23:38:40  mahidhar
-# *** empty log message ***
-#
-# Revision 1.2  2009/04/20 18:52:12  jhayes
-# Tweaks.
-#
-# Revision 1.1  2009/02/05 18:36:05  bruno
-# added
+# Revision 1.2  2009/10/18 19:10:41  jhayes
+# Added gnu version.  Move installation to /opt/fftw.  Clean up for release.
 #
 #
 
@@ -75,4 +66,3 @@ default:	roll
 
 clean::
 	rm -f _arch bootstrap.py
-

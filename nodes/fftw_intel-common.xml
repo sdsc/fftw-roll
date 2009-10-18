@@ -2,30 +2,22 @@
 
 <kickstart>
 
-  <description>
-   FFTW + INTEL Compilers
-  </description>
+<description>
+FFTW for INTEL compilers
+http://www.fftw.org
+</description>
 
-  <copyright>
-  Copyright (c) 2000 - 2008 The Regents of the University of California.
-  All rights reserved. Rocks(r) v5.1 www.rocksclusters.org
-  </copyright>
+<copyright>
+Copyright (c) 2000 - 2008 The Regents of the University of California.
+All rights reserved. Rocks(r) v5.1 www.rocksclusters.org
+</copyright>
 
-  <changelog>
+<changelog>
+</changelog>
 
-  </changelog>
+<package>fftw_intel</package>
 
-  <package>fftw_intel</package>
-
-  <post>
-mkdir /opt/modulefiles/applications/fftw
-chmod 0755 /opt/modulefiles/applications/fftw
-ln -s /opt/modulefiles/applications/application /opt/modulefiles/applications/fftw/3.2.1
-<file name="/opt/modulefiles/applications/fftw/.version.3.2.1">
-#%Module1.0
-set ModulesVersion "3.2.1"
-</file>
-ln -s /opt/modulefiles/applications/fftw/.version.3.2.1 /opt/modulefiles/applications/fftw/.version
-  </post>
+<post>
+</post>
 
 </kickstart>

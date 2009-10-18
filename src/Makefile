@@ -54,14 +54,8 @@
 # @Copyright@
 #
 # $Log$
-# Revision 1.1  2009/06/04 19:24:41  jhayes
-# Add missing build files.
-#
-# Revision 1.2  2009/04/01 19:15:34  phil
-# Adjustments to build on Solaris
-#
-# Revision 1.1  2009/02/05 18:36:05  bruno
-# added
+# Revision 1.2  2009/10/18 19:10:41  jhayes
+# Added gnu version.  Move installation to /opt/fftw.  Clean up for release.
 #
 #
 
