@@ -17,9 +17,7 @@ All rights reserved. Rocks(r) v5.1 www.rocksclusters.org
 
 <post>
 
-if test -d /opt/modulefiles; then
-
-  /bin/mkdir -m 0755 -p /opt/modulefiles/applications/fftw
+/bin/mkdir -m 0755 -p /opt/modulefiles/applications/fftw
 
 <file name="/opt/modulefiles/applications/fftw/3.2.1" perms="0644">
 #%Module1.0
@@ -41,10 +39,8 @@ prepend-path LIBPATH $fftwHome/lib$libsubdir
 set ModulesVersion "3.2.1"
 </file>
 
-  /bin/ln -s /opt/modulefiles/applications/fftw/.version.3.2.1 \
-             /opt/modulefiles/applications/fftw/.version
-
-fi
+/bin/ln -s /opt/modulefiles/applications/fftw/.version.3.2.1 \
+           /opt/modulefiles/applications/fftw/.version
 
 </post>
 

@@ -26,15 +26,7 @@
     <to>fftw_pgi-common</to>
   </edge>
 
-  <edge from="fftw_gnu-common">
-    <to>fftw-modules-common</to>
-  </edge>
-
-  <edge from="fftw_intel-common">
-    <to>fftw-modules-common</to>
-  </edge>
-
-  <edge from="fftw_pgi-common">
+  <edge from="envmodules-common">
     <to>fftw-modules-common</to>
   </edge>
 
