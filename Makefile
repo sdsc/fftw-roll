@@ -54,15 +54,10 @@
 # 
 # @Copyright@
 #
-# $Log$
-# Revision 1.2  2009/10/18 19:10:41  jhayes
-# Added gnu version.  Move installation to /opt/fftw.  Clean up for release.
-#
-#
 
 -include $(ROLLSROOT)/etc/Rolls.mk
 
-default:	roll
+default: roll
 
 clean::
 	rm -f _arch bootstrap.py

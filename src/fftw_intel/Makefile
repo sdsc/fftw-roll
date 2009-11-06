@@ -54,11 +54,6 @@
 #
 # @Copyright@
 #
-# $Log$
-# Revision 1.2  2009/10/18 19:10:42  jhayes
-# Added gnu version.  Move installation to /opt/fftw.  Clean up for release.
-#
-#
 
 PKGROOT = /opt/fftw
 SOURCE = fftw-$(VERSION)

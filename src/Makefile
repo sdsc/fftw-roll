@@ -53,11 +53,6 @@
 # 
 # @Copyright@
 #
-# $Log$
-# Revision 1.2  2009/10/18 19:10:41  jhayes
-# Added gnu version.  Move installation to /opt/fftw.  Clean up for release.
-#
-#
 
 -include $(shell ${ROCKSROOT}/bin/arch).mk
 -include $(shell ${ROCKSROOT}/bin/os).mk

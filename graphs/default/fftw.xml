@@ -2,32 +2,33 @@
 
 <graph>
 
-  <description>
-  FFTW libraries
-  </description>
+<description>
+FFTW library module settings
+http://www.fftw.org
+</description>
 
-  <copyright>
-  Copyright (c) 2000 - 2008 The Regents of the University of California.
-  All rights reserved. Rocks(r) v5.1 www.rocksclusters.org
-  </copyright>
+<copyright>
+Copyright (c) 2000 - 2009 The Regents of the University of California.
+All rights reserved. Rocks(r) v5.1 www.rocksclusters.org
+</copyright>
 
-  <changelog>
-  </changelog>
+<changelog>
+</changelog>
 
-  <edge from="base">
-    <to>fftw_gnu-common</to>
-  </edge>
+<edge from="base">
+  <to>fftw_gnu-common</to>
+</edge>
 
-  <edge from="intel-compilers-common">
-    <to>fftw_intel-common</to>
-  </edge>
+<edge from="intel-compilers-common">
+  <to>fftw_intel-common</to>
+</edge>
 
-  <edge from="pgi-common">
-    <to>fftw_pgi-common</to>
-  </edge>
+<edge from="pgi-common">
+  <to>fftw_pgi-common</to>
+</edge>
 
-  <edge from="envmodules-common">
-    <to>fftw-modules-common</to>
-  </edge>
+<edge from="envmodules-common">
+  <to>fftw-modules-common</to>
+</edge>
 
 </graph>
