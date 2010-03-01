@@ -17,39 +17,63 @@ All rights reserved. Rocks(r) v5.1 www.rocksclusters.org
 
 <post>
 
-if test `grep -c /opt/modulefiles/applications /etc/profile.d/modules.csh` = 0; then
-  echo 'setenv MODULEPATH /opt/modulefiles/applications:$MODULEPATH' >> \
-       /etc/profile.d/modules.csh
-fi
-if test `grep -c /opt/modulefiles/applications /etc/profile.d/modules.sh` = 0; then
-  echo 'export MODULEPATH=/opt/modulefiles/applications:$MODULEPATH' >> \
-       /etc/profile.d/modules.sh
-fi
+/bin/mkdir -m 0755 -p /opt/modulefiles/applications/.gnu/fftw
+/bin/mkdir -m 0755 -p /opt/modulefiles/applications/.intel/fftw
+/bin/mkdir -m 0755 -p /opt/modulefiles/applications/.pgi/fftw
 
-/bin/mkdir -m 0755 -p /opt/modulefiles/applications/fftw
-
-<file name="/opt/modulefiles/applications/fftw/3.2.1" perms="0644">
+<file name="/opt/modulefiles/applications/.gnu/fftw/3.2.1" perms="0644">
 #%Module1.0
 set fftwHome /opt/fftw
-set compiler [expr ! [catch {exec which icc} ignored] ? {"intel"} : \
-                   ! [catch {exec which pgcc} ignored] ? {"pgi"} : {"gnu"}]
-set libsubdir [expr {$compiler} == {"gnu"} ? {""} : {"/$compiler"}]
 module-whatis "fftw"
 module-whatis "Version: 3.2.1"
 module-whatis "Description: fftw"
-module-whatis "Compiler:$compiler"
-prepend-path PATH $fftwHome/bin
-prepend-path LD_LIBRARY_PATH $fftwHome/lib$libsubdir
-prepend-path LIBPATH $fftwHome/lib$libsubdir
+module-whatis "Compiler:gnu"
+prepend-path PATH $fftwHome/gnu/bin
+prepend-path LD_LIBRARY_PATH $fftwHome/gnu/lib
+prepend-path LIBPATH $fftwHome/gnu/lib
+</file>
+<file name="/opt/modulefiles/applications/.intel/fftw/3.2.1" perms="0644">
+#%Module1.0
+set fftwHome /opt/fftw
+module-whatis "fftw"
+module-whatis "Version: 3.2.1"
+module-whatis "Description: fftw"
+module-whatis "Compiler:intel"
+prepend-path PATH $fftwHome/intel/bin
+prepend-path LD_LIBRARY_PATH $fftwHome/intel/lib
+prepend-path LIBPATH $fftwHome/intel/lib
+</file>
+<file name="/opt/modulefiles/applications/.pgi/fftw/3.2.1" perms="0644">
+#%Module1.0
+set fftwHome /opt/fftw
+module-whatis "fftw"
+module-whatis "Version: 3.2.1"
+module-whatis "Description: fftw"
+module-whatis "Compiler:pgi"
+prepend-path PATH $fftwHome/pgi/bin
+prepend-path LD_LIBRARY_PATH $fftwHome/pgi/lib
+prepend-path LIBPATH $fftwHome/pgi/lib
 </file>
 
-<file name="/opt/modulefiles/applications/fftw/.version.3.2.1">
+<file name="/opt/modulefiles/applications/.gnu/fftw/.version.3.2.1">
+#%Module1.0
+set ModulesVersion "3.2.1"
+</file>
+<file name="/opt/modulefiles/applications/.intel/fftw/.version.3.2.1">
+#%Module1.0
+set ModulesVersion "3.2.1"
+</file>
+<file name="/opt/modulefiles/applications/.pgi/fftw/.version.3.2.1">
 #%Module1.0
 set ModulesVersion "3.2.1"
 </file>
 
-/bin/ln -s /opt/modulefiles/applications/fftw/.version.3.2.1 \
-           /opt/modulefiles/applications/fftw/.version
+/bin/ln -s /opt/modulefiles/applications/.gnu/fftw/.version.3.2.1 \
+           /opt/modulefiles/applications/.gnu/fftw/.version
+/bin/ln -s /opt/modulefiles/applications/.intel/fftw/.version.3.2.1 \
+           /opt/modulefiles/applications/.intel/fftw/.version
+/bin/ln -s /opt/modulefiles/applications/.pgi/fftw/.version.3.2.1 \
+           /opt/modulefiles/applications/.pgi/fftw/.version
 
 </post>
 
