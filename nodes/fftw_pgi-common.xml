@@ -16,6 +16,7 @@ All rights reserved. Rocks(r) v5.1 www.rocksclusters.org
 </changelog>
 
 <package>fftw_pgi</package>
+<package>roll-fftw-usersguide</package>
 
 <post>
 </post>
