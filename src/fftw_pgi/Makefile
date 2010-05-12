@@ -62,7 +62,7 @@ RPM.EXTRAS=%define __os_install_post /usr/lib/rpm/brp-compress
 
 -include $(ROCKSROOT)/etc/Rules.mk
 
-PGIDIR = /opt/pgi/linux86-64/8.0
+PGIDIR = /opt/pgi/linux86-64/10.5
 COMPILE_FLAGS = -O4 -Munroll=c:1 -Mipa -Mnoframe -Mlre -Mautoinline
 
 build:
