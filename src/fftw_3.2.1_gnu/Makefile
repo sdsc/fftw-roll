@@ -55,7 +55,7 @@
 # @Copyright@
 #
 
-PKGROOT = /opt/fftw/$(VERSION)
+PKGROOT = /opt/fftw/$(VERSION)/gnu
 SOURCE = fftw-$(VERSION)
 REDHAT.ROOT = $(PWD)/../../
 RPM.EXTRAS=%define __os_install_post /usr/lib/rpm/brp-compress

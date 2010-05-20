@@ -55,7 +55,7 @@
 # @Copyright@
 #
 
-PKGROOT = /opt/fftw/$(VERSION)
+PKGROOT = /opt/fftw/$(VERSION)/pgi
 SOURCE = fftw-$(VERSION)
 REDHAT.ROOT = $(PWD)/../../
 RPM.EXTRAS=%define __os_install_post /usr/lib/rpm/brp-compress
@@ -85,9 +85,6 @@ install::
 	  cd $(SOURCE); \
 	  make prefix=$(ROOT)/$(PKGROOT) install \
 	)
-	mv $(ROOT)/$(PKGROOT)/lib $(ROOT)/$(PKGROOT)/pgilib
-	mkdir $(ROOT)/$(PKGROOT)/lib
-	mv $(ROOT)/$(PKGROOT)/pgilib $(ROOT)/$(PKGROOT)/lib/pgi
 
 clean::
 	rm -rf $(SOURCE)
