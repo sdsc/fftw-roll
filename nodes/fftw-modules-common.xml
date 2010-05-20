@@ -28,6 +28,7 @@ module-whatis "Version: 3.2.1"
 module-whatis "Description: fftw"
 module-whatis "Compiler: gnu"
 set fftwHome /opt/fftw/3.2.1/gnu
+setenv FFTW_HOME $fftwHome
 prepend-path PATH $fftwHome/bin
 prepend-path LD_LIBRARY_PATH $fftwHome/lib
 prepend-path LIBPATH $fftwHome/lib
@@ -39,6 +40,7 @@ module-whatis "Version: 3.2.1"
 module-whatis "Description: fftw"
 module-whatis "Compiler: intel"
 set fftwHome /opt/fftw/3.2.1/intel
+setenv FFTW_HOME $fftwHome
 prepend-path PATH $fftwHome/bin
 prepend-path LD_LIBRARY_PATH $fftwHome/lib
 prepend-path LIBPATH $fftwHome/lib
@@ -50,6 +52,7 @@ module-whatis "Version: 3.2.1"
 module-whatis "Description: fftw"
 module-whatis "Compiler: pgi"
 set fftwHome /opt/fftw/3.2.1/pgi
+setenv FFTW_HOME $fftwHome
 prepend-path PATH $fftwHome/bin
 prepend-path LD_LIBRARY_PATH $fftwHome/lib
 prepend-path LIBPATH $fftwHome/lib
