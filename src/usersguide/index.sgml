@@ -5,6 +5,14 @@ $Id$
 @Copyright@
 
 $Log$
+Revision 1.2  2011/02/14 23:34:12  mjk
+NOTICE: Rocks build environment has changed
+
+You must rebuild and install the rocks-devel package (base roll).  Only
+then can you build docs on your frontend.
+
+All usersguides have been updated to build with the new rules.
+
 Revision 1.1  2009/12/04 21:04:36  jhayes
 Add usersguide.
 
@@ -30,13 +38,13 @@ added
 <book>
 <bookinfo>
 
-	<title> fftw Roll: Users Guide </title>
+	<title> fftw Users Guide </title>
 
-        <edition>Version &document_version;</edition>
-        <pubdate>&document_pubdate;</pubdate>
+        <edition>&document-version;</edition>
+        <pubdate>&document-pubdate;</pubdate>
         <copyright id="copyright" xreflabel="copyright">
-                <year>&document_year;</year>
-                <holder>&document_copyright;</holder>   
+                <year>&document-year;</year>
+                <holder>&document-copyright;</holder>   
         </copyright>
 
         <releaseinfo>
@@ -52,9 +60,9 @@ added
 
 </bookinfo>
 
-&source_preface;
-&source_roll-overview;
-&source_installing;
-&source_appendix;
+&source-preface;
+&source-roll-overview;
+&source-installing;
+&source-appendix;
 
 </book>
