@@ -53,26 +53,55 @@
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 # @Copyright@
-#
 
-PKGROOT = /opt/fftw/$(VERSION)/gnu
+ifndef ROLLCOMPILER
+  ROLLCOMPILER = gnu
+endif
+ifndef ROLLNETWORK
+  ROLLNETWORK = eth
+endif
+
+PKGROOT = /opt/fftw/$(VERSION)/$(ROLLCOMPILER)
 SOURCE = fftw-$(VERSION)
 REDHAT.ROOT = $(PWD)/../../
 RPM.EXTRAS=%define __os_install_post /usr/lib/rpm/brp-compress
 
 -include $(ROCKSROOT)/etc/Rules.mk
 
-COMPILE_FLAGS = -O2 
+COMPILERSETUP = \
+  if test -e /etc/profile.d/modules.sh; then \
+    . /etc/profile.d/modules.sh; \
+    module load $(ROLLCOMPILER); \
+  fi
+
+ifeq ("$(ROLLNETWORK)", "eth")
+  OPENMPISUFFIX =
+else
+  OPENMPISUFFIX = _$(ROLLNETWORK)
+endif
+
+MPISETUP = \
+  if test -e /etc/profile.d/modules.sh; then \
+    . /etc/profile.d/modules.sh; \
+    module load openmpi$(OPENMPISUFFIX); \
+  fi; \
+  export MPI_HOME=`which mpicxx | perl -pe 's!/bin/.*!!'`; \
+  if test -z "$${MPI_HOME}"; then \
+    export MPI_HOME=/opt/openmpi; \
+  fi; \
+  echo Using MPI from $${MPI_HOME}; \
+  export PATH=$${PATH}:$${MPI_HOME}/bin; \
+  export LD_LIBRARY_PATH=$${LD_LIBRARY_PATH}:$${MPI_HOME}/lib
 
 build:
 	tar zxvf $(REDHAT.ROOT)/src/$(SOURCE).tar.gz
 	( \
-	  export CC=/opt/openmpi/gnu/ib/bin/mpicc; \
+	  $(COMPILERSETUP); \
+	  $(MPISETUP); \
+	  export CC=$${MPI_HOME}/bin/mpicc; \
 	  export CFLAGS="$(COMPILE_FLAGS)"; \
-	  export F77=/opt/openmpi/gnu/ib/bin/mpif77; \
+	  export F77=$${MPI_HOME}/bin/mpif77; \
 	  export FFLAGS="$(COMPILE_FLAGS)"; \
-	  export PATH=/opt/openmpi/gnu/ib/bin:$(PATH); \
-	  export LD_LIBRARY_PATH=/opt/openmpi/gnu/ib/lib:$(LD_LIBRARY_PATH); \
 	  cd $(SOURCE); \
 	  ./configure --prefix=$(PKGROOT) --enable-mpi --enable-openmp; \
 	  make \

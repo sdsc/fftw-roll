@@ -53,36 +53,68 @@
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 # @Copyright@
-#
 
-PKGROOT = /opt/fftw/$(VERSION)/intel
+ifndef ROLLCOMPILER
+  ROLLCOMPILER = gnu
+endif
+ifndef ROLLNETWORK
+  ROLLNETWORK = eth
+endif
+
+PKGROOT = /opt/fftw/$(VERSION)/$(ROLLCOMPILER)
 SOURCE = fftw-$(VERSION)
 REDHAT.ROOT = $(PWD)/../../
 RPM.EXTRAS=%define __os_install_post /usr/lib/rpm/brp-compress
 
 -include $(ROCKSROOT)/etc/Rules.mk
 
-COMPILE_FLAGS = -O2 -xSSE4.2
+COMPILERSETUP = \
+  if test -e /etc/profile.d/modules.sh; then \
+    . /etc/profile.d/modules.sh; \
+    module load $(ROLLCOMPILER); \
+  fi
 
-INTEL_BASE = /opt/intel/Compiler/11.1/072
-C_INTEL_ENV = $(INTEL_BASE)/bin/intel64/iccvars_intel64.sh
-F_INTEL_ENV = $(INTEL_BASE)/bin/intel64/ifortvars_intel64.sh
-INTEL_LICENSE_FILE = /opt/flexlm/license/license-intel.txt
+ifeq ("$(ROLLNETWORK)", "eth")
+  OPENMPISUFFIX =
+else
+  OPENMPISUFFIX = _$(ROLLNETWORK)
+endif
+
+MPISETUP = \
+  if test -e /etc/profile.d/modules.sh; then \
+    . /etc/profile.d/modules.sh; \
+    module load openmpi$(OPENMPISUFFIX); \
+  fi; \
+  export MPI_HOME=`which mpicxx | perl -pe 's!/bin/.*!!'`; \
+  if test -z "$${MPI_HOME}"; then \
+    export MPI_HOME=/opt/openmpi; \
+  fi; \
+  echo Using MPI from $${MPI_HOME}; \
+  export PATH=$${PATH}:$${MPI_HOME}/bin; \
+  export LD_LIBRARY_PATH=$${LD_LIBRARY_PATH}:$${MPI_HOME}/lib
+
+CCOMP = gcc
+FCOMP = g77
+COMPILE_FLAGS = -O2
+ifeq ("$(ROLLCOMPILER)", "intel")
+  CCOMP = icc
+  FCOMP = ifort
+  COMPILE_FLAGS = -O3 -fp-model precise -prec_div -prec_sqrt -ftz
+else ifeq ("$(ROLLCOMPILER)", "pgi")
+  CCOMP = pgcc
+  FCOMP = pgf77
+  COMPILE_FLAGS = -O3 -fpic -Mflushz -Mdaz -Kieee -Mlarge_arrays
+endif
 
 build:
 	tar zxvf $(REDHAT.ROOT)/src/$(SOURCE).tar.gz
 	( \
-          export PATH=/opt/openmpi/intel/ib/bin:$(PATH); \
-          export LD_LIBRARY_PATH=/opt/openmpi/intel/ib/lib:$(LD_LIBRARY_PATH); \
-	  . $(C_INTEL_ENV); \
-	  . $(F_INTEL_ENV); \
-	  export INTEL_LICENSE_FILE=$(INTEL_LICENSE_FILE); \
-	  export CC=/opt/openmpi/intel/ib/bin/mpicc; \
+	  export CC=$(CCOMP); \
 	  export CFLAGS="$(COMPILE_FLAGS)"; \
-	  export F77=/opt/openmpi/intel/ib/bin/mpif77; \
+	  export F77=$(FCOMP); \
 	  export FFLAGS="$(COMPILE_FLAGS)"; \
 	  cd $(SOURCE); \
-	  ./configure --prefix=$(PKGROOT) --enable-mpi --enable-openmp; \
+	  ./configure --prefix=$(PKGROOT) --enable-openmp; \
 	  make \
 	)
 
