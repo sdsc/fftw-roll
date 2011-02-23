@@ -94,7 +94,7 @@ MPISETUP = \
   export LD_LIBRARY_PATH=$${LD_LIBRARY_PATH}:$${MPI_HOME}/lib
 
 build:
-	tar zxvf $(REDHAT.ROOT)/src/$(SOURCE).tar.gz
+	tar zxvf $(SOURCE).tar.gz
 	( \
 	  $(COMPILERSETUP); \
 	  $(MPISETUP); \

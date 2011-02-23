@@ -16,24 +16,10 @@ All rights reserved. Rocks(r) v5.1 www.rocksclusters.org
 </changelog>
 
 <edge from="base">
-  <to>fftw_gnu-common</to>
+  <to>fftw-common</to>
 </edge>
 <order from="head">
-  <tail>fftw_gnu-common</tail>
-</order>
-
-<edge from="intel-compilers-common">
-  <to>fftw_intel-common</to>
-</edge>
-<order head="intel-compilers-common">
-  <tail>fftw_intel-common</tail>
-</order>
-
-<edge from="pgi-common">
-  <to>fftw_pgi-common</to>
-</edge>
-<order head="pgi-common">
-  <tail>fftw_pgi-common</tail>
+  <tail>fftw-common</tail>
 </order>
 
 <edge from="envmodules-common">

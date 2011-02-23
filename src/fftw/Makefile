@@ -107,8 +107,10 @@ else ifeq ("$(ROLLCOMPILER)", "pgi")
 endif
 
 build:
-	tar zxvf $(REDHAT.ROOT)/src/$(SOURCE).tar.gz
+	tar zxvf $(SOURCE).tar.gz
 	( \
+	  $(COMPILERSETUP); \
+	  $(MPISETUP); \
 	  export CC=$(CCOMP); \
 	  export CFLAGS="$(COMPILE_FLAGS)"; \
 	  export F77=$(FCOMP); \
