@@ -78,6 +78,89 @@ set ModulesVersion "3.2.1"
 /bin/ln -s /opt/modulefiles/applications/.pgi/fftw/.version.3.2.1 \
            /opt/modulefiles/applications/.pgi/fftw/.version
 
+<file name="/opt/modulefiles/applications/.gnu/fftw/2.1.5" perms="0644">
+#%Module1.0
+module-whatis "fftw"
+module-whatis "Version: 2.1.5"
+module-whatis "Description: fftw"
+module-whatis "Compiler: gnu"
+if { ! [info exists env(MPIHOME)] } {
+  puts stderr "Need to load an mpi module first"
+  exit
+} elseif { [string match "*mpich2*" $env(MPIHOME)] } {
+  set mpiFlavor mpich2
+} elseif { [string match "*mvapich2*" $env(MPIHOME)] } {
+  set mpiFlavor mvapich2
+} elseif { [string match "*openmpi*" $env(MPIHOME)] } {
+  set mpiFlavor openmpi
+} else {
+  puts stderr "Unknown mpi $env(MPIHOME)"
+  exit
+}
+set fftwHome /opt/fftw/2.1.5/gnu/$mpiFlavor
+setenv FFTWHOME $fftwHome
+prepend-path LIBPATH $fftwHome/lib
+</file>
+<file name="/opt/modulefiles/applications/.intel/fftw/2.1.5" perms="0644">
+#%Module1.0
+module-whatis "fftw"
+module-whatis "Version: 2.1.5"
+module-whatis "Description: fftw"
+module-whatis "Compiler: intel"
+if { ! [info exists env(MPIHOME)] } {
+  puts stderr "Need to load an mpi module first"
+  exit
+} elseif { [string match "*mpich2*" $env(MPIHOME)] } {
+  set mpiFlavor mpich2
+} elseif { [string match "*mvapich2*" $env(MPIHOME)] } {
+  set mpiFlavor mvapich2
+} elseif { [string match "*openmpi*" $env(MPIHOME)] } {
+  set mpiFlavor openmpi
+} else {
+  puts stderr "Unknown mpi $env(MPIHOME)"
+  exit
+}
+set fftwHome /opt/fftw/2.1.5/intel/$mpiFlavor
+setenv FFTWHOME $fftwHome
+prepend-path LIBPATH $fftwHome/lib
+</file>
+<file name="/opt/modulefiles/applications/.pgi/fftw/2.1.5" perms="0644">
+#%Module1.0
+module-whatis "fftw"
+module-whatis "Version: 2.1.5"
+module-whatis "Description: fftw"
+module-whatis "Compiler: pgi"
+if { ! [info exists env(MPIHOME)] } {
+  puts stderr "Need to load an mpi module first"
+  exit
+} elseif { [string match "*mpich2*" $env(MPIHOME)] } {
+  set mpiFlavor mpich2
+} elseif { [string match "*mvapich2*" $env(MPIHOME)] } {
+  set mpiFlavor mvapich2
+} elseif { [string match "*openmpi*" $env(MPIHOME)] } {
+  set mpiFlavor openmpi
+} else {
+  puts stderr "Unknown mpi $env(MPIHOME)"
+  exit
+}
+set fftwHome /opt/fftw/2.1.5/pgi/$mpiFlavor
+setenv FFTWHOME $fftwHome
+prepend-path LIBPATH $fftwHome/lib
+</file>
+
+<file name="/opt/modulefiles/applications/.gnu/fftw/.version.2.1.5">
+#%Module1.0
+set ModulesVersion "2.1.5"
+</file>
+<file name="/opt/modulefiles/applications/.intel/fftw/.version.2.1.5">
+#%Module1.0
+set ModulesVersion "2.1.5"
+</file>
+<file name="/opt/modulefiles/applications/.pgi/fftw/.version.2.1.5">
+#%Module1.0
+set ModulesVersion "2.1.5"
+</file>
+
 </post>
 
 </kickstart>
