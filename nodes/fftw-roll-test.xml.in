@@ -32,6 +32,52 @@ my $isLogin = $appliance eq 'Login';
 my $output;
 
 my $TESTFILE = 'rollfftw';
+open(OUT, ">$TESTFILE.c");
+print OUT <<END;
+#ifdef FFTW3
+#include <fftw3.h>
+#define c_re(X) X[0]
+#define c_im(X) X[1]
+#else
+#include <fftw.h>
+#endif
+#include <stdio.h>
+
+#define N 4
+
+int
+main(int argc, char **argv)
+{
+  fftw_complex *in, *out;
+  fftw_plan p;
+  int i;
+
+  in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N);
+  out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N);
+
+  for(i = 0; i < N; i++) {
+    c_re(in[i]) = i;
+    c_im(in[i]) = 0.0;
+  }
+
+#ifdef FFTW3
+  p = fftw_plan_dft_1d(N, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
+  fftw_execute(p);
+#else
+  p = fftw_create_plan(N, FFTW_FORWARD, FFTW_ESTIMATE);
+  fftw(p, 1, in, 1, 0, out, 1, 0);
+#endif
+
+  fprintf(stdout, "{");
+  for(i = 0 ; i < N; i++) {
+    fprintf(stdout, " {%2.2f, %2.2f}", c_re(out[i]), c_im(out[i]));
+  }
+  fprintf(stdout, " }\\n");
+
+  fftw_destroy_plan(p);
+  fftw_free(in); fftw_free(out);
+}
+END
 
 my @COMPILERS = (
   'ROLLCOMPILER',
@@ -44,11 +90,20 @@ my @MPIS = (
   'mvapich2',
   'openmpi',
 );
+my %CC = (
+  'gnu' => 'gcc',
+  'intel' => 'icc',
+  'pgi' => 'pgcc'
+);
 
 foreach my $COMPILER (@COMPILERS) {
   $output = `find /opt/fftw -name bin | grep -vs 2.1.5`;
   like($output, qr#$COMPILER/bin#, "fftw latest for $COMPILER installed");
   ok(-l "/opt/modulefiles/applications/.$COMPILER/fftw/.version", "module file for fftw latest for $COMPILER installed");
+  $output = `. /etc/profile.d/modules.sh; module load $COMPILER fftw; $CC{$COMPILER} -DFFTW3 -I\$FFTWHOME/include -L\$FFTWHOME/lib -o $TESTFILE.$COMPILER.exe $TESTFILE.c -lfftw3 -lm`;
+  ok(-f "$TESTFILE.$COMPILER.exe", "compile/link using fftw latest for $COMPILER");
+  $output = `./$TESTFILE.$COMPILER.exe`;
+  like($output, qr/{ {6.00, 0.00} {-2.00, 2.00} {-2.00, 0.00} {-2.00, -2.00} }/, "run using fftw latest for $COMPILER");
 }
 
 foreach my $COMPILER (@COMPILERS) {
@@ -56,10 +111,12 @@ foreach my $COMPILER (@COMPILERS) {
     $output = `find /opt/fftw/2.1.5 -name fftw.h`;
     like($output, qr#$COMPILER/$MPI#, "fftw v2.1.5 for $COMPILER/$MPI installed");
     ok(-l "/opt/modulefiles/applications/.$COMPILER/fftw/2.1.5", "module file for fftw v2.1.5 for $COMPILER installed");
+    $output = `. /etc/profile.d/modules.sh; module load $COMPILER $MPI fftw/2.1.5; $CC{$COMPILER} -I\$FFTWHOME/include -L\$FFTWHOME/lib -o $TESTFILE.$COMPILER.$MPI.exe $TESTFILE.c -lfftw -lm`;
+    ok(-f "$TESTFILE.$COMPILER.$MPI.exe", "compile/link using fftw v2.1.5 for $COMPILER/$MPI");
+    $output = `./$TESTFILE.$COMPILER.$MPI.exe`;
+    like($output, qr/{ {6.00, 0.00} {-2.00, 2.00} {-2.00, 0.00} {-2.00, -2.00} }/, "run using fftw v2.1.5 for $COMPILER/$MPI");
   }
 }
-
-# TODO: Test the installed s/w
 
 `rm -f $TESTFILE*`;
 ]]>
