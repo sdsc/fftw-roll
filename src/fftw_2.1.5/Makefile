@@ -57,11 +57,14 @@
 ifndef ROLLCOMPILER
   ROLLCOMPILER = gnu
 endif
+ifndef ROLLMPI
+  ROLLMPI = openmpi
+endif
 ifndef ROLLNETWORK
   ROLLNETWORK = eth
 endif
 
-PKGROOT = /opt/fftw/$(VERSION)/$(ROLLCOMPILER)
+PKGROOT = /opt/fftw/$(VERSION)/$(ROLLCOMPILER)/$(ROLLMPI)
 SOURCE = fftw-$(VERSION)
 REDHAT.ROOT = $(PWD)/../../
 RPM.EXTRAS=%define __os_install_post /usr/lib/rpm/brp-compress
@@ -83,7 +86,7 @@ endif
 MPISETUP = \
   if test -e /etc/profile.d/modules.sh; then \
     . /etc/profile.d/modules.sh; \
-    module load openmpi$(OPENMPISUFFIX); \
+    module load $(ROLLMPI)$(OPENMPISUFFIX); \
   fi; \
   export MPI_HOME=`which mpicxx | perl -pe 's!/bin/.*!!'`; \
   if test -z "$${MPI_HOME}"; then \
