@@ -1,0 +1,70 @@
+<?xml version="1.0" standalone="no"?>
+
+<kickstart>
+
+<description>
+FFTW roll installation test.
+http://www.fftw.org
+</description>
+
+<copyright>
+Copyright (c) 2000 - 2011 The Regents of the University of California.
+All rights reserved. Rocks(r) v5.1 www.rocksclusters.org
+</copyright>
+
+<changelog>
+</changelog>
+
+<post>
+
+/bin/mkdir -m 0755 /root/rolltests
+
+<file name="/root/rolltests/fftw.t" perms="0755">
+<![CDATA[#!/usr/bin/perl -w
+
+use Test::More qw(no_plan);
+
+my $appliance = $#ARGV >= 0 ? $ARGV[0] :
+                -d '/export/rocks/install' ? 'Frontend' : 'Compute';
+my $isCompute = $appliance eq 'Compute';
+my $isFe = $appliance eq 'Frontend';
+my $isLogin = $appliance eq 'Login';
+my $output;
+
+my $TESTFILE = 'rollfftw';
+
+my @COMPILERS = (
+  'ROLLCOMPILER',
+);
+my @NETWORKS = (
+  'ROLLNETWORK',
+);
+my @MPIS = (
+  'mpich2',
+  'mvapich2',
+  'openmpi',
+);
+
+foreach my $COMPILER (@COMPILERS) {
+  $output = `find /opt/fftw -name bin | grep -vs 2.1.5`;
+  like($output, qr#$COMPILER/bin#, "fftw latest for $COMPILER installed");
+  ok(-l "/opt/modulefiles/applications/.$COMPILER/fftw/.version", "module file for fftw latest for $COMPILER installed");
+}
+
+foreach my $COMPILER (@COMPILERS) {
+  foreach my $MPI (@MPIS) {
+    $output = `find /opt/fftw/2.1.5 -name fftw.h`;
+    like($output, qr#$COMPILER/$MPI#, "fftw v2.1.5 for $COMPILER/$MPI installed");
+    ok(-l "/opt/modulefiles/applications/.$COMPILER/fftw/2.1.5", "module file for fftw v2.1.5 for $COMPILER installed");
+  }
+}
+
+# TODO: Test the installed s/w
+
+`rm -f $TESTFILE*`;
+]]>
+</file>
+
+</post>
+
+</kickstart> 
