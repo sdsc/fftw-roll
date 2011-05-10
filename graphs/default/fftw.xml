@@ -18,7 +18,7 @@ All rights reserved. Rocks(r) v5.1 www.rocksclusters.org
 <edge from="base">
   <to>fftw-common</to>
 </edge>
-<order from="head">
+<order from="base">
   <tail>fftw-common</tail>
 </order>
 
@@ -34,6 +34,13 @@ All rights reserved. Rocks(r) v5.1 www.rocksclusters.org
 </edge>
 <order head="server">
   <tail>fftw-doc</tail>
+</order>
+
+<edge from="base">
+  <to>fftw-roll-test</to>
+</edge>
+<order from="base">
+  <tail>fftw-roll-test</tail>
 </order>
 
 </graph>
