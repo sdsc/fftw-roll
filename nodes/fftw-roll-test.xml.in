@@ -108,13 +108,15 @@ foreach my $COMPILER (@COMPILERS) {
 
 foreach my $COMPILER (@COMPILERS) {
   foreach my $MPI (@MPIS) {
-    $output = `find /opt/fftw/2.1.5 -name fftw.h`;
-    like($output, qr#$COMPILER/$MPI#, "fftw v2.1.5 for $COMPILER/$MPI installed");
-    ok(-l "/opt/modulefiles/applications/.$COMPILER/fftw/2.1.5", "module file for fftw v2.1.5 for $COMPILER installed");
-    $output = `. /etc/profile.d/modules.sh; module load $COMPILER $MPI fftw/2.1.5; $CC{$COMPILER} -I\$FFTWHOME/include -L\$FFTWHOME/lib -o $TESTFILE.$COMPILER.$MPI.exe $TESTFILE.c -lfftw -lm`;
-    ok(-f "$TESTFILE.$COMPILER.$MPI.exe", "compile/link using fftw v2.1.5 for $COMPILER/$MPI");
-    $output = `./$TESTFILE.$COMPILER.$MPI.exe`;
-    like($output, qr/{ {6.00, 0.00} {-2.00, 2.00} {-2.00, 0.00} {-2.00, -2.00} }/, "run using fftw v2.1.5 for $COMPILER/$MPI");
+    foreach my $NETWORK (@NETWORKS) {
+      $output = `find /opt/fftw/2.1.5 -name fftw.h`;
+      like($output, qr#$COMPILER/$MPI#, "fftw v2.1.5 for $COMPILER/$MPI installed");
+      ok(-f "/opt/modulefiles/applications/.$COMPILER/fftw/2.1.5", "module file for fftw v2.1.5 for $COMPILER installed");
+      $output = `. /etc/profile.d/modules.sh; module load $COMPILER ${MPI}_$NETWORK fftw/2.1.5; $CC{$COMPILER} -I\$FFTWHOME/include -L\$FFTWHOME/lib -o $TESTFILE.$COMPILER.$MPI.exe $TESTFILE.c -lfftw -lm`;
+      ok(-f "$TESTFILE.$COMPILER.$MPI.exe", "compile/link using fftw v2.1.5 for $COMPILER/$MPI");
+      $output = `./$TESTFILE.$COMPILER.$MPI.exe`;
+      like($output, qr/{ {6.00, 0.00} {-2.00, 2.00} {-2.00, 0.00} {-2.00, -2.00} }/, "run using fftw v2.1.5 for $COMPILER/$MPI");
+    }
   }
 }
 
