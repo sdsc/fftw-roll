@@ -89,6 +89,8 @@ if { ! [info exists env(MPIHOME)] } {
   exit
 } elseif { [string match "*mpich2*" $env(MPIHOME)] } {
   set mpiFlavor mpich2
+} elseif { [string match "*mpich*" $env(MPIHOME)] } {
+  set mpiFlavor mpich
 } elseif { [string match "*mvapich2*" $env(MPIHOME)] } {
   set mpiFlavor mvapich2
 } elseif { [string match "*openmpi*" $env(MPIHOME)] } {
@@ -112,6 +114,8 @@ if { ! [info exists env(MPIHOME)] } {
   exit
 } elseif { [string match "*mpich2*" $env(MPIHOME)] } {
   set mpiFlavor mpich2
+} elseif { [string match "*mpich*" $env(MPIHOME)] } {
+  set mpiFlavor mpich
 } elseif { [string match "*mvapich2*" $env(MPIHOME)] } {
   set mpiFlavor mvapich2
 } elseif { [string match "*openmpi*" $env(MPIHOME)] } {
@@ -135,6 +139,8 @@ if { ! [info exists env(MPIHOME)] } {
   exit
 } elseif { [string match "*mpich2*" $env(MPIHOME)] } {
   set mpiFlavor mpich2
+} elseif { [string match "*mpich*" $env(MPIHOME)] } {
+  set mpiFlavor mpich
 } elseif { [string match "*mvapich2*" $env(MPIHOME)] } {
   set mpiFlavor mvapich2
 } elseif { [string match "*openmpi*" $env(MPIHOME)] } {
