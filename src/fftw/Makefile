@@ -94,7 +94,7 @@ MPISETUP = \
   export LD_LIBRARY_PATH=$${LD_LIBRARY_PATH}:$${MPI_HOME}/lib
 
 CCOMP = gcc
-FCOMP = g77
+FCOMP = gfortran
 COMPILE_FLAGS = -O2
 ifeq ("$(ROLLCOMPILER)", "intel")
   CCOMP = icc
