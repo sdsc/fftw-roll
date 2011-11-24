@@ -60,8 +60,11 @@ endif
 ifndef ROLLMPI
   ROLLMPI = openmpi
 endif
-ifndef ROLLNETWORK
-  ROLLNETWORK = eth
+
+ifeq ("$(ROLLNETWORK)", "eth")
+  MPIMODULE = $(ROLLMPI)
+else
+  MPIMODULE = $(ROLLMPI)_$(ROLLNETWORK)
 endif
 
 PKGROOT = /opt/fftw/$(VERSION)/$(ROLLCOMPILER)/$(ROLLMPI)
@@ -77,20 +80,15 @@ COMPILERSETUP = \
     module load $(ROLLCOMPILER); \
   fi
 
-ifeq ("$(ROLLNETWORK)", "eth")
-  OPENMPISUFFIX =
-else
-  OPENMPISUFFIX = _$(ROLLNETWORK)
-endif
 
 MPISETUP = \
   if test -e /etc/profile.d/modules.sh; then \
     . /etc/profile.d/modules.sh; \
-    module load $(ROLLMPI)$(OPENMPISUFFIX); \
+    module load $(MPIMODULE); \
   fi; \
   export MPI_HOME=`which mpicxx | perl -pe 's!/bin/.*!!'`; \
   if test -z "$${MPI_HOME}"; then \
-    export MPI_HOME=/opt/openmpi; \
+    export MPI_HOME=/opt/$(ROLLMPI); \
   fi; \
   echo Using MPI from $${MPI_HOME}; \
   export PATH=$${PATH}:$${MPI_HOME}/bin; \
