@@ -64,12 +64,6 @@ ifndef ROLLMPI
   ROLLMPI = openmpi
 endif
 
-ifeq ("$(ROLLNETWORK)", "eth")
-  MPIMODULE = $(ROLLMPI)
-else
-  MPIMODULE = $(ROLLMPI)_$(ROLLNETWORK)
-endif
-
 PKGROOT = /opt/fftw/$(VERSION)/$(ROLLCOMPILER)
 SOURCE = fftw-$(VERSION)
 REDHAT.ROOT = $(PWD)/../../
@@ -83,6 +77,11 @@ COMPILERSETUP = \
     module load $(ROLLCOMPILER); \
   fi
 
+ifeq ("$(ROLLNETWORK)", "eth")
+  MPIMODULE = $(ROLLMPI)
+else
+  MPIMODULE = $(ROLLMPI)_$(ROLLNETWORK)
+endif
 
 MPISETUP = \
   if test -e /etc/profile.d/modules.sh; then \
@@ -125,7 +124,7 @@ build:
 	)
 
 install::
-	mkdir -p $(ROOT)/$(PKGROOT)
+	mkdir -p -m 755 $(ROOT)/$(PKGROOT)
 	( \
 	  cd $(SOURCE); \
 	  make prefix=$(ROOT)/$(PKGROOT) install \
