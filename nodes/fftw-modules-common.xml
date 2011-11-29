@@ -21,61 +21,61 @@ All rights reserved. Rocks(r) v5.1 www.rocksclusters.org
 /bin/mkdir -m 0755 -p /opt/modulefiles/applications/.intel/fftw
 /bin/mkdir -m 0755 -p /opt/modulefiles/applications/.pgi/fftw
 
-<file name="/opt/modulefiles/applications/.gnu/fftw/3.2.1" perms="0644">
+<file name="/opt/modulefiles/applications/.gnu/fftw/3.3" perms="0644">
 #%Module1.0
 module-whatis "fftw"
-module-whatis "Version: 3.2.1"
+module-whatis "Version: 3.3"
 module-whatis "Description: fftw"
 module-whatis "Compiler: gnu"
-set fftwHome /opt/fftw/3.2.1/gnu
+set fftwHome /opt/fftw/3.3/gnu
 setenv FFTWHOME $fftwHome
 prepend-path PATH $fftwHome/bin
 prepend-path LD_LIBRARY_PATH $fftwHome/lib
 prepend-path LIBPATH $fftwHome/lib
 </file>
-<file name="/opt/modulefiles/applications/.intel/fftw/3.2.1" perms="0644">
+<file name="/opt/modulefiles/applications/.intel/fftw/3.3" perms="0644">
 #%Module1.0
 module-whatis "fftw"
-module-whatis "Version: 3.2.1"
+module-whatis "Version: 3.3"
 module-whatis "Description: fftw"
 module-whatis "Compiler: intel"
-set fftwHome /opt/fftw/3.2.1/intel
+set fftwHome /opt/fftw/3.3/intel
 setenv FFTWHOME $fftwHome
 prepend-path PATH $fftwHome/bin
 prepend-path LD_LIBRARY_PATH $fftwHome/lib
 prepend-path LIBPATH $fftwHome/lib
 </file>
-<file name="/opt/modulefiles/applications/.pgi/fftw/3.2.1" perms="0644">
+<file name="/opt/modulefiles/applications/.pgi/fftw/3.3" perms="0644">
 #%Module1.0
 module-whatis "fftw"
-module-whatis "Version: 3.2.1"
+module-whatis "Version: 3.3"
 module-whatis "Description: fftw"
 module-whatis "Compiler: pgi"
-set fftwHome /opt/fftw/3.2.1/pgi
+set fftwHome /opt/fftw/3.3/pgi
 setenv FFTWHOME $fftwHome
 prepend-path PATH $fftwHome/bin
 prepend-path LD_LIBRARY_PATH $fftwHome/lib
 prepend-path LIBPATH $fftwHome/lib
 </file>
 
-<file name="/opt/modulefiles/applications/.gnu/fftw/.version.3.2.1">
+<file name="/opt/modulefiles/applications/.gnu/fftw/.version.3.3">
 #%Module1.0
-set ModulesVersion "3.2.1"
+set ModulesVersion "3.3"
 </file>
-<file name="/opt/modulefiles/applications/.intel/fftw/.version.3.2.1">
+<file name="/opt/modulefiles/applications/.intel/fftw/.version.3.3">
 #%Module1.0
-set ModulesVersion "3.2.1"
+set ModulesVersion "3.3"
 </file>
-<file name="/opt/modulefiles/applications/.pgi/fftw/.version.3.2.1">
+<file name="/opt/modulefiles/applications/.pgi/fftw/.version.3.3">
 #%Module1.0
-set ModulesVersion "3.2.1"
+set ModulesVersion "3.3"
 </file>
 
-/bin/ln -s /opt/modulefiles/applications/.gnu/fftw/.version.3.2.1 \
+/bin/ln -s /opt/modulefiles/applications/.gnu/fftw/.version.3.3 \
            /opt/modulefiles/applications/.gnu/fftw/.version
-/bin/ln -s /opt/modulefiles/applications/.intel/fftw/.version.3.2.1 \
+/bin/ln -s /opt/modulefiles/applications/.intel/fftw/.version.3.3 \
            /opt/modulefiles/applications/.intel/fftw/.version
-/bin/ln -s /opt/modulefiles/applications/.pgi/fftw/.version.3.2.1 \
+/bin/ln -s /opt/modulefiles/applications/.pgi/fftw/.version.3.3 \
            /opt/modulefiles/applications/.pgi/fftw/.version
 
 <file name="/opt/modulefiles/applications/.gnu/fftw/2.1.5" perms="0644">
