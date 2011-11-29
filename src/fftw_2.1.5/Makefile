@@ -67,12 +67,26 @@ else
   MPIMODULE = $(ROLLMPI)_$(ROLLNETWORK)
 endif
 
+
 PKGROOT = /opt/fftw/$(VERSION)/$(ROLLCOMPILER)/$(ROLLMPI)
 SOURCE = fftw-$(VERSION)
 REDHAT.ROOT = $(PWD)/../../
 RPM.EXTRAS=%define __os_install_post /usr/lib/rpm/brp-compress
 
 -include $(ROCKSROOT)/etc/Rules.mk
+CC=gcc
+F77=gfortran
+MPICC=mpicc
+
+ifeq ("$(ROLLCOMPILER)", "intel")
+    CC=icc
+    F77=ifort
+endif
+
+ifeq ("$(ROLLCOMPILER)", "pgi")
+    CC=pgcc
+    F77=pgf77
+endif
 
 COMPILERSETUP = \
   if test -e /etc/profile.d/modules.sh; then \
@@ -95,25 +109,24 @@ MPISETUP = \
   export LD_LIBRARY_PATH=$${LD_LIBRARY_PATH}:$${MPI_HOME}/lib
 
 build:
+	echo "CC " $(CC)
 	tar zxvf $(SOURCE).tar.gz
 	( \
-	  $(COMPILERSETUP); \
-	  $(MPISETUP); \
-	  export CC=$${MPI_HOME}/bin/mpicc; \
-	  export CFLAGS="$(COMPILE_FLAGS)"; \
-	  export F77=$${MPI_HOME}/bin/mpif77; \
-	  export FFLAGS="$(COMPILE_FLAGS)"; \
-	  cd $(SOURCE); \
-	  ./configure --prefix=$(PKGROOT) --enable-mpi --enable-openmp; \
-	  make \
-	)
+ 	  $(COMPILERSETUP); \
+          $(MPISETUP); \
+          export CFLAGS=$(COMPILE_FLAGS); \
+    	  export FFLAGS=$(COMPILE_FLAGS); \
+ 	  cd $(SOURCE); \
+ 	 ./configure  F77=$(F77) CC=$(CC) MPICC=$(MPICC) --prefix=$(PKGROOT) --enable-mpi --enable-openmp; \
+  	 make \
+        )
 
 install::
 	mkdir -p $(ROOT)/$(PKGROOT)
 	( \
-	  cd $(SOURCE); \
+ 	  cd $(SOURCE); \
 	  make prefix=$(ROOT)/$(PKGROOT) install \
 	)
 
 clean::
-	rm -rf $(SOURCE)
+	rm -rf $(SOURCE) dist
