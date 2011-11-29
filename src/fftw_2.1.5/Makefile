@@ -57,16 +57,12 @@
 ifndef ROLLCOMPILER
   ROLLCOMPILER = gnu
 endif
+ifndef ROLLNETWORK
+  ROLLNETWORK = eth
+endif
 ifndef ROLLMPI
   ROLLMPI = openmpi
 endif
-
-ifeq ("$(ROLLNETWORK)", "eth")
-  MPIMODULE = $(ROLLMPI)
-else
-  MPIMODULE = $(ROLLMPI)_$(ROLLNETWORK)
-endif
-
 
 PKGROOT = /opt/fftw/$(VERSION)/$(ROLLCOMPILER)/$(ROLLMPI)
 SOURCE = fftw-$(VERSION)
@@ -74,19 +70,6 @@ REDHAT.ROOT = $(PWD)/../../
 RPM.EXTRAS=%define __os_install_post /usr/lib/rpm/brp-compress
 
 -include $(ROCKSROOT)/etc/Rules.mk
-CC=gcc
-F77=gfortran
-MPICC=mpicc
-
-ifeq ("$(ROLLCOMPILER)", "intel")
-    CC=icc
-    F77=ifort
-endif
-
-ifeq ("$(ROLLCOMPILER)", "pgi")
-    CC=pgcc
-    F77=pgf77
-endif
 
 COMPILERSETUP = \
   if test -e /etc/profile.d/modules.sh; then \
@@ -94,6 +77,11 @@ COMPILERSETUP = \
     module load $(ROLLCOMPILER); \
   fi
 
+ifeq ("$(ROLLNETWORK)", "eth")
+  MPIMODULE = $(ROLLMPI)
+else
+  MPIMODULE = $(ROLLMPI)_$(ROLLNETWORK)
+endif
 
 MPISETUP = \
   if test -e /etc/profile.d/modules.sh; then \
@@ -108,23 +96,32 @@ MPISETUP = \
   export PATH=$${PATH}:$${MPI_HOME}/bin; \
   export LD_LIBRARY_PATH=$${LD_LIBRARY_PATH}:$${MPI_HOME}/lib
 
+CC = gcc
+F77 = gfortran
+MPICC = mpicc
+ifeq ("$(ROLLCOMPILER)", "intel")
+  CC = icc
+  F77 = ifort
+else ifeq ("$(ROLLCOMPILER)", "pgi")
+  CC = pgcc
+  F77 = pgf77
+endif
+
 build:
 	echo "CC " $(CC)
 	tar zxvf $(SOURCE).tar.gz
 	( \
- 	  $(COMPILERSETUP); \
-          $(MPISETUP); \
-          export CFLAGS=$(COMPILE_FLAGS); \
-    	  export FFLAGS=$(COMPILE_FLAGS); \
- 	  cd $(SOURCE); \
- 	 ./configure  F77=$(F77) CC=$(CC) MPICC=$(MPICC) --prefix=$(PKGROOT) --enable-mpi --enable-openmp; \
-  	 make \
-        )
+	  $(COMPILERSETUP); \
+	  $(MPISETUP); \
+	  cd $(SOURCE); \
+	  ./configure  F77=$(F77) CC=$(CC) MPICC=$(MPICC) --prefix=$(PKGROOT) --enable-mpi --enable-openmp; \
+	  make \
+	)
 
 install::
 	mkdir -p $(ROOT)/$(PKGROOT)
 	( \
- 	  cd $(SOURCE); \
+	  cd $(SOURCE); \
 	  make prefix=$(ROOT)/$(PKGROOT) install \
 	)
 
