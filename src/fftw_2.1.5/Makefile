@@ -105,6 +105,7 @@ ifeq ("$(ROLLCOMPILER)", "intel")
 else ifeq ("$(ROLLCOMPILER)", "pgi")
   CC = pgcc
   F77 = pgf77
+  export CFLAGS=
 endif
 
 build:

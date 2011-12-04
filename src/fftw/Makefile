@@ -96,13 +96,14 @@ MPISETUP = \
   export PATH=$${PATH}:$${MPI_HOME}/bin; \
   export LD_LIBRARY_PATH=$${LD_LIBRARY_PATH}:$${MPI_HOME}/lib
 
-CCOMP = gcc
-FCOMP = gfortran
+CONFIG_OPTIONS = --enable-openmp --enable-mpi
 COMPILE_FLAGS = -O2
+MPICC=mpicc
 ifeq ("$(ROLLCOMPILER)", "intel")
   CCOMP = icc
   FCOMP = ifort
   COMPILE_FLAGS = -O3 -fp-model precise -prec_div -prec_sqrt -ftz
+  CONFIG_OPTIONS += --enable-avx
 else ifeq ("$(ROLLCOMPILER)", "pgi")
   CCOMP = pgcc
   FCOMP = pgf77
@@ -119,7 +120,7 @@ build:
 	  export F77=$(FCOMP); \
 	  export FFLAGS="$(COMPILE_FLAGS)"; \
 	  cd $(SOURCE); \
-	  ./configure --prefix=$(PKGROOT) --enable-openmp; \
+	  ./configure F77=$(FCOMP) CC=$(CCOMP) MPICC=$(MPICC) --prefix=$(PKGROOT) $(CONFIG_OPTIONS);  \
 	  make \
 	)
 
