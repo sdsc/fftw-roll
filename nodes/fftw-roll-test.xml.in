@@ -98,10 +98,13 @@ END
 # fftw-common.xml
 $output = `find /opt/fftw -name bin | grep -vs 2.1.5`;
 foreach my $compiler (@COMPILERS) {
-  if($appliance =~ /$installedOnAppliancesPattern/) {
-    like($output, qr#$compiler/bin#, "fftw latest/$compiler installed");
-  } else {
-    unlike($output, qr#$compiler/bin#, "fftw latest/$compiler not installed");
+  foreach my $mpi (@MPIS) {
+    if($appliance =~ /$installedOnAppliancesPattern/) {
+      like($output, qr#$compiler/$mpi#, "fftw latest/$compiler/$mpi installed");
+    } else {
+      unlike($output, qr#$compiler/$mpi#,
+             "fftw latest/$compiler/$mpi not installed");
+    }
   }
 }
 $output = `find /opt/fftw/2.1.5 -name fftw.h`;
