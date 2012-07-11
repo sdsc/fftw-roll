@@ -1,0 +1,39 @@
+#!/bin/bash
+/bin/mkdir -m 0755 -p ROOT_PKGROOTMODULEROOT
+cat > ROOT_PKGROOTMODULEROOT/VERSION <<END
+#%Module1.0
+module-whatis "fftw"
+module-whatis "Version: VERSION"
+module-whatis "Description: fftw"
+module-whatis "Compiler: ROLLCOMPILER"
+if { ! [info exists env(MPIHOME)] } {
+  puts stderr "Need to load an mpi module first"
+  exit
+} elseif { [string match "*mpich2*" \$env(MPIHOME)] } {
+  set mpiFlavor mpich2
+} elseif { [string match "*mpich*" \$env(MPIHOME)] } {
+  set mpiFlavor mpich
+} elseif { [string match "*mvapich2*" \$env(MPIHOME)] } {
+  set mpiFlavor mvapich2
+} elseif { [string match "*openmpi*" \$env(MPIHOME)] } {
+  set mpiFlavor openmpi
+} else {
+  puts stderr "Unknown mpi \$env(MPIHOME)"
+  exit
+}
+set fftwHome /opt/fftw/VERSION/ROLLCOMPILER/\$mpiFlavor
+setenv FFTWHOME \$fftwHome
+prepend-path PATH \$fftwHome/bin
+prepend-path LD_LIBRARY_PATH \$fftwHome/lib
+prepend-path LIBPATH \$fftwHome/lib
+END
+
+chmod 0644  ROOT_PKGROOTMODULEROOT/VERSION
+
+cat > ROOT_PKGROOTMODULEROOT/.version.VERSION <<END
+#%Module1.0
+set ModulesVersion "VERSION"
+END
+
+(cd ROOT_PKGROOTMODULEROOT; /bin/ln -s .version.VERSION .version )
+
