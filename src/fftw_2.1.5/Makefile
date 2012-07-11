@@ -99,13 +99,18 @@ MPISETUP = \
 CC = gcc
 F77 = gfortran
 MPICC = mpicc
+CFLAGS=-mavx -O2
+FFLAGS=-mavx -O2
 ifeq ("$(ROLLCOMPILER)", "intel")
   CC = icc
   F77 = ifort
+  CFLAGS=-xHOST -O2
+  FFLAGS=-xHOST -O2
 else ifeq ("$(ROLLCOMPILER)", "pgi")
   CC = pgcc
   F77 = pgf77
-  export CFLAGS=
+  CFLAGS=-fast
+  FFLAGS=-fast
 endif
 
 build:
@@ -115,6 +120,8 @@ build:
 	  $(COMPILERSETUP); \
 	  $(MPISETUP); \
 	  cd $(SOURCE); \
+          export CFLAGS="$(CFLAGS)"; \
+          export FFLAGS="$(FFLAGS)"; \
 	  ./configure  F77=$(F77) CC=$(CC) MPICC=$(MPICC) --prefix=$(PKGROOT) --enable-mpi --enable-openmp; \
 	  make \
 	)
