@@ -24,6 +24,7 @@ if { ! [info exists env(MPIHOME)] } {
 set fftwHome /opt/fftw/VERSION/ROLLCOMPILER/$\mpiFlavor
 setenv FFTWHOME \$fftwHome
 prepend-path LIBPATH \$fftwHome/lib
+prepend-path LD_LIBRARY_PATH \$fftwHome/lib
 END
 
 chmod 0644  ROOT_PKGROOTMODULEROOT/VERSION
