@@ -126,6 +126,7 @@ build:
 
 install::
 	mkdir -p -m 755 $(ROOT)/$(PKGROOT)
+	mkdir -p $(REDHAT.ROOT)/src/build-mpi-modules
 	( \
 	  cd $(SOURCE); \
 	  make prefix=$(ROOT)/$(PKGROOT) install \
