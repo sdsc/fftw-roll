@@ -126,7 +126,7 @@ build:
 
 install::
 	mkdir -p -m 755 $(ROOT)/$(PKGROOT)
-	mkdir -p $(REDHAT.ROOT)/src/build-mpi-modules
+	mkdir -p $(REDHAT.ROOT)/src/build-fftw-modules
 	( \
 	  cd $(SOURCE); \
 	  make prefix=$(ROOT)/$(PKGROOT) install \
