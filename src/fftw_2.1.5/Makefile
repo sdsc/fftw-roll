@@ -120,11 +120,13 @@ build:
 	)
 
 install::
-	mkdir -p $(ROOT)/$(PKGROOT)
-	( \
-	  cd $(SOURCE); \
-	  make prefix=$(ROOT)/$(PKGROOT) install \
-	)
+#	mkdir -p $(ROOT)/$(PKGROOT)
+#	( \
+#	  cd $(SOURCE); \
+#	  make prefix=$(ROOT)/$(PKGROOT) install \
+#	)
+	cat fftw-2.1.5.module | perl -pi -e "s!MODULEROOT!/opt/modulefiles/applications/.$(ROLLCOMPILER)/fftw!g;s!VERSION!$(VERSION)!g;s!ROLLCOMPILER!$(ROLLCOMPILER)!g;s!ROLLNETWORK!$(ROLLNETWORK)!g" \
+          > $(REDHAT.ROOT)/src/build-fftw-modules/$(NAME).module
 
 clean::
 	rm -rf $(SOURCE) dist

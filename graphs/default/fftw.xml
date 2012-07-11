@@ -22,13 +22,6 @@ All rights reserved. Rocks(r) v5.1 www.rocksclusters.org
   <tail>fftw-common</tail>
 </order>
 
-<edge from="envmodules-common">
-  <to>fftw-modules-common</to>
-</edge>
-<order head="envmodules-common">
-  <tail>fftw-modules-common</tail>
-</order>
-
 <edge from="server">
   <to>fftw-doc</to>
 </edge>
