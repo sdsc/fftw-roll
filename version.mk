@@ -1,5 +1,5 @@
 ROLLNAME = fftw$(ROLLSUFFIX)
-RELEASE  = 1
+RELEASE  = 3
 COLOR    = orange
 
 REDHAT.ROOT = $(PWD)
