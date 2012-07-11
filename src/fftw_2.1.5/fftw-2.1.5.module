@@ -21,7 +21,7 @@ if { ! [info exists env(MPIHOME)] } {
   puts stderr "Unknown mpi \$env(MPIHOME)"
   exit
 }
-set fftwHome /opt/fftw/VERSION/ROLLCOMPILER/$\mpiFlavor
+set fftwHome /opt/fftw/VERSION/ROLLCOMPILER/\$mpiFlavor
 setenv FFTWHOME \$fftwHome
 prepend-path LIBPATH \$fftwHome/lib
 prepend-path LD_LIBRARY_PATH \$fftwHome/lib
