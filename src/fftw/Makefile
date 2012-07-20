@@ -127,10 +127,12 @@ build:
 install::
 	mkdir -p -m 755 $(ROOT)/$(PKGROOT)
 	mkdir -p $(REDHAT.ROOT)/src/build-fftw-modules
+	mount --bind $(ROOT)/$(PKGROOT) $(PKGROOT)
 	( \
 	  cd $(SOURCE); \
-	  make prefix=$(ROOT)/$(PKGROOT) install \
+	  make prefix=$(PKGROOT) install \
 	)
+	umount $(PKGROOT)
 	cat fftw.module | perl -pi -e "s!MODULEROOT!/opt/modulefiles/applications/.$(ROLLCOMPILER)/fftw!g;s!VERSION!$(VERSION)!g;s!ROLLCOMPILER!$(ROLLCOMPILER)!g;s!ROLLNETWORK!$(ROLLNETWORK)!g" \
           > $(REDHAT.ROOT)/src/build-fftw-modules/$(NAME).module
 
