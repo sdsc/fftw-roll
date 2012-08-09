@@ -64,7 +64,7 @@ ifndef ROLLMPI
   ROLLMPI = openmpi
 endif
 
-PKGROOT = /opt/fftw/$(VERSION)/$(ROLLCOMPILER)/$(ROLLMPI)
+PKGROOT = /opt/fftw/$(VERSION)/$(ROLLCOMPILER)/$(ROLLMPI)/$(ROLLNETWORK)
 SOURCE = fftw-$(VERSION)
 REDHAT.ROOT = $(PWD)/../../
 RPM.EXTRAS=%define __os_install_post /usr/lib/rpm/brp-compress
@@ -116,9 +116,16 @@ build:
 	  $(COMPILERSETUP); \
 	  $(MPISETUP); \
 	  export CC=$(CCOMP); \
-	  export CFLAGS="$(COMPILE_FLAGS)"; \
+          COMPILE_FLAGS="$(COMPILE_FLAGS)"; \
+          if test "$(ROLLCOMPILER)" = "gnu"; then \
+             version=`gcc -v 2>&1 |grep version|awk '{print $$3}'|sed 's/\.//g'`; \
+             if test "$${version}" -lt 461; then \
+                COMPILE_FLAGS="`echo "$${COMPILE_FLAGS}"|sed 's/\-mavx //'`"; \
+             fi; \
+          fi; \
+	  export CFLAGS="$${COMPILE_FLAGS}"; \
 	  export F77=$(FCOMP); \
-	  export FFLAGS="$(COMPILE_FLAGS)"; \
+	  export FFLAGS="$${COMPILE_FLAGS}"; \
 	  cd $(SOURCE); \
 	  ./configure F77=$(FCOMP) CC=$(CCOMP) MPICC=$(MPICC) --prefix=$(PKGROOT) $(CONFIG_OPTIONS);  \
 	  make \
@@ -133,7 +140,7 @@ install::
 	  make prefix=$(PKGROOT) install \
 	)
 	umount $(PKGROOT)
-	cat fftw.module | perl -pi -e "s!MODULEROOT!/opt/modulefiles/applications/.$(ROLLCOMPILER)/fftw!g;s!VERSION!$(VERSION)!g;s!ROLLCOMPILER!$(ROLLCOMPILER)!g;s!ROLLNETWORK!$(ROLLNETWORK)!g" \
+	cat fftw.module | perl -pi -e "s!MODULEROOT!/opt/modulefiles/applications/.$(ROLLCOMPILER)/fftw!g;s!VERSION!$(VERSION)!g;s!ROLLCOMPILER!$(ROLLCOMPILER)!g" \
           > $(REDHAT.ROOT)/src/build-fftw-modules/$(NAME).module
 
 clean::

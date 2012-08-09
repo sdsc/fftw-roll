@@ -6,22 +6,41 @@ module-whatis "fftw"
 module-whatis "Version: VERSION"
 module-whatis "Description: fftw"
 module-whatis "Compiler: ROLLCOMPILER"
-if { ! [info exists env(MPIHOME)] } {
-  puts stderr "Need to load an mpi module first"
-  exit
-} elseif { [string match "*mpich2*" \$env(MPIHOME)] } {
-  set mpiFlavor mpich2
-} elseif { [string match "*mpich*" \$env(MPIHOME)] } {
-  set mpiFlavor mpich
-} elseif { [string match "*mvapich2*" \$env(MPIHOME)] } {
-  set mpiFlavor mvapich2
-} elseif { [string match "*openmpi*" \$env(MPIHOME)] } {
-  set mpiFlavor openmpi
-} else {
-  puts stderr "Unknown mpi \$env(MPIHOME)"
-  exit
+if {! [info exists ::env(MPIHOME)]} {
+  puts stderr "Need to load an mpi module before loading fftw_VERSION"
+  exit 1
 }
-set fftwHome /opt/fftw/VERSION/ROLLCOMPILER/\$mpiFlavor
+foreach {x} [glob -directory /opt/fftw/VERSION/ROLLCOMPILER -tails *] {
+  if {[regexp $x $::env(MPIHOME)]} {
+    set mpi $x
+    break
+  }
+}
+if {! [info exists mpi]} {
+  if {[ regexp ScaleMP $::env(MPIHOME)]} {
+      set mpi vsmp
+  }
+}
+if {! [info exists mpi]} {
+  puts stderr "No supported MPI flavor found"
+  exit 1
+}
+foreach {x} [glob -directory /opt/fftw/VERSION/ROLLCOMPILER/$mpi -tails *] {
+  if {[regexp $x $::env(MPIHOME)]} {
+    set network $x
+    break
+  }
+}
+if {! [info exists network]} {
+  if {[ regexp ScaleMP $::env(MPIHOME)]} {
+      set network ib
+  }
+}
+if {! [info exists network]} {
+  puts stderr "No supported network found"
+  exit 1
+}
+set fftwHome /opt/fftw/VERSION/ROLLCOMPILER/\$mpi/\$network
 setenv FFTWHOME \$fftwHome
 prepend-path PATH \$fftwHome/bin
 prepend-path LD_LIBRARY_PATH \$fftwHome/lib
