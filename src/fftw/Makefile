@@ -116,16 +116,9 @@ build:
 	  $(COMPILERSETUP); \
 	  $(MPISETUP); \
 	  export CC=$(CCOMP); \
-          COMPILE_FLAGS="$(COMPILE_FLAGS)"; \
-          if test "$(ROLLCOMPILER)" = "gnu"; then \
-             version=`gcc -v 2>&1 |grep version|awk '{print $$3}'|sed 's/\.//g'`; \
-             if test "$${version}" -lt 461; then \
-                COMPILE_FLAGS="`echo "$${COMPILE_FLAGS}"|sed 's/\-mavx //'`"; \
-             fi; \
-          fi; \
-	  export CFLAGS="$${COMPILE_FLAGS}"; \
+	  export CFLAGS="$(COMPILE_FLAGS)"; \
 	  export F77=$(FCOMP); \
-	  export FFLAGS="$${COMPILE_FLAGS}"; \
+	  export FFLAGS="$(COMPILE_FLAGS)"; \
 	  cd $(SOURCE); \
 	  ./configure F77=$(FCOMP) CC=$(CCOMP) MPICC=$(MPICC) --prefix=$(PKGROOT) $(CONFIG_OPTIONS);  \
 	  make \

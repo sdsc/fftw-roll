@@ -120,15 +120,6 @@ build:
 	  $(COMPILERSETUP); \
 	  $(MPISETUP); \
 	  cd $(SOURCE); \
-          CFLAGS="$(CFLAGS)"; \
-          FFLAGS="$(FFLAGS)"; \
-          if test "$(ROLLCOMPILER)" = "gnu"; then \
-             version=`gcc -v 2>&1 |grep version|awk '{print $$3}'|sed 's/\.//g'`; \
-             if test "$${version}" -lt 461; then \
-                CFLAGS="`echo "$${CFLAGS}"|sed 's/\-mavx //'`"; \
-                FFLAGS="`echo "$${FFLAGS}"|sed 's/\-mavx //'`"; \
-             fi; \
-          fi; \
           export CFLAGS="$(CFLAGS)"; \
           export FFLAGS="$(FFLAGS)"; \
 	  ./configure  F77=$(F77) CC=$(CC) MPICC=$(MPICC) --prefix=$(PKGROOT) --enable-mpi --enable-openmp; \
