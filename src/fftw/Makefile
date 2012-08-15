@@ -126,6 +126,7 @@ build:
 
 install::
 	mkdir -p -m 755 $(ROOT)/$(PKGROOT)
+	mkdir -p -m 755 $(PKGROOT)
 	mkdir -p $(REDHAT.ROOT)/src/build-fftw-modules
 	mount --bind $(ROOT)/$(PKGROOT) $(PKGROOT)
 	( \
