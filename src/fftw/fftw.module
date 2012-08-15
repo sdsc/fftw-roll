@@ -11,13 +11,13 @@ if {! [info exists ::env(MPIHOME)]} {
   exit 1
 }
 foreach {x} [glob -directory /opt/fftw/VERSION/ROLLCOMPILER -tails *] {
-  if {[regexp $x $::env(MPIHOME)]} {
-    set mpi $x
+  if {[regexp \$x \$::env(MPIHOME)]} {
+    set mpi \$x
     break
   }
 }
 if {! [info exists mpi]} {
-  if {[ regexp ScaleMP $::env(MPIHOME)]} {
+  if {[ regexp ScaleMP \$::env(MPIHOME)]} {
       set mpi vsmp
   }
 }
@@ -25,14 +25,14 @@ if {! [info exists mpi]} {
   puts stderr "No supported MPI flavor found"
   exit 1
 }
-foreach {x} [glob -directory /opt/fftw/VERSION/ROLLCOMPILER/$mpi -tails *] {
-  if {[regexp $x $::env(MPIHOME)]} {
-    set network $x
+foreach {x} [glob -directory /opt/fftw/VERSION/ROLLCOMPILER/\$mpi -tails *] {
+  if {[regexp \$x \$::env(MPIHOME)]} {
+    set network \$x
     break
   }
 }
 if {! [info exists network]} {
-  if {[ regexp ScaleMP $::env(MPIHOME)]} {
+  if {[ regexp ScaleMP \$::env(MPIHOME)]} {
       set network ib
   }
 }
