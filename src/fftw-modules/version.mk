@@ -1,3 +1,3 @@
-NAME    	= fftw-modules
-VERSION 	= 1.0
-RELEASE 	= 3
+NAME    = fftw-modules_$(ROLLCOMPILER)
+VERSION = 3.3.2
+RELEASE = 1

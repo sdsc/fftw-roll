@@ -1,11 +1,11 @@
-#
+# --------------------------------------------------- -*- Makefile -*- --
 # $Id$
 #
 # @Copyright@
 # 
-# 				Rocks(tm)
+# 				Rocks(r)
 # 		         www.rocksclusters.org
-# 		        version 4.3 (Mars Hill)
+# 		       version 5.2 (Chimichanga)
 # 
 # Copyright (c) 2000 - 2011 The Regents of the University of California.
 # All rights reserved.	
@@ -25,7 +25,7 @@
 # 3. All advertising and press materials, printed or electronic, mentioning
 # features or use of this software must display the following acknowledgement: 
 # 
-# 	"This product includes software developed by the Rocks(tm)
+# 	"This product includes software developed by the Rocks(r)
 # 	Cluster Group at the San Diego Supercomputer Center at the
 # 	University of California, San Diego and its contributors."
 # 
@@ -54,24 +54,22 @@
 # 
 # @Copyright@
 
-REDHAT.ROOT     = $(PWD)/../../
+PKGROOT = /opt/modulefiles/applications/.$(ROLLCOMPILER)/fftw
+REDHAT.ROOT = $(CURDIR)/../../
 
 -include $(ROCKSROOT)/etc/Rules.mk
 include Rules.mk
 
-
 build:
 
 install::
-	( \
-           modulefiles=`ls $(REDHAT.ROOT)/src/build-fftw-modules/*.module 2>/dev/null`; \
-           if test  -n "$${modulefiles}"; then \
-                for modulefile in $${modulefiles}; do \
-                    perl -pi -e "s!ROOT_PKGROOT!$(ROOT)!g" $${modulefile}; \
-                    bash $${modulefile}; \
-                done; \
-           fi \
-        )
-
+	  mkdir -p $(ROOT)/$(PKGROOT)
+	  cp fftw.module $(ROOT)/$(PKGROOT)/$(VERSION)
+	  cp fftw.version $(ROOT)/$(PKGROOT)/.version.$(VERSION)
+	  perl -pi -e 's/VERSION/$(VERSION)/g' $(ROOT)/$(PKGROOT)/$(VERSION)
+	  perl -pi -e 's/VERSION/$(VERSION)/g' $(ROOT)/$(PKGROOT)/.version.$(VERSION)
+	  perl -pi -e 's/ROLLCOMPILER/$(ROLLCOMPILER)/g' $(ROOT)/$(PKGROOT)/$(VERSION)
+	  perl -pi -e 's/ROLLCOMPILER/$(ROLLCOMPILER)/g' $(ROOT)/$(PKGROOT)/.version.$(VERSION)
+	  ln -s $(PKGROOT)/.version.$(VERSION) $(ROOT)/$(PKGROOT)/.version
 
 clean::

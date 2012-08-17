@@ -17,7 +17,8 @@ All rights reserved. Rocks(r) v5.1 www.rocksclusters.org
 
 <package>fftw_2.1.5_ROLLCOMPILER_ROLLMPI_ROLLNETWORK</package>
 <package>fftw_ROLLCOMPILER_ROLLMPI_ROLLNETWORK</package>
-<package>fftw-modules</package>
+<package>fftw-modules_ROLLCOMPILER</package>
+<package>fftw_2.1.5-modules_ROLLCOMPILER</package>
 
 <post>
 </post>
