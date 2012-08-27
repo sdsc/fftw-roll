@@ -97,7 +97,7 @@ MPISETUP = \
   export PATH=$${PATH}:$${MPI_HOME}/bin; \
   export LD_LIBRARY_PATH=$${LD_LIBRARY_PATH}:$${MPI_HOME}/lib
 
-CONFIG_OPTIONS = --enable-openmp --enable-mpi
+CONFIG_OPTIONS = --enable-openmp --enable-mpi --enable-threads
 COMPILE_FLAGS = -mavx -O2
 MPICC=mpicc
 ifeq ("$(ROLLCOMPILER)", "intel")
