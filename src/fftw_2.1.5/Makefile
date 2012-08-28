@@ -100,18 +100,17 @@ MPISETUP = \
 CC = gcc
 F77 = gfortran
 MPICC = mpicc
-CFLAGS=-mavx -O2
-FFLAGS=-mavx -O2
+COMPILE_FLAGS = -O2
 ifeq ("$(ROLLCOMPILER)", "intel")
   CC = icc
   F77 = ifort
-  CFLAGS=-xHOST -O2
-  FFLAGS=-xHOST -O2
+  COMPILE_FLAGS = -xHOST -O2
 else ifeq ("$(ROLLCOMPILER)", "pgi")
   CC = pgcc
   F77 = pgf77
-  CFLAGS=-fast
-  FFLAGS=-fast
+  COMPILE_FLAGS = -fast
+else ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
+  COMPILE_FLAGS += -mavx
 endif
 
 build:
@@ -121,8 +120,8 @@ build:
 	  $(COMPILERSETUP); \
 	  $(MPISETUP); \
 	  cd $(SOURCE); \
-          export CFLAGS="$(CFLAGS)"; \
-          export FFLAGS="$(FFLAGS)"; \
+          export CFLAGS="$(COMPILE_FLAGS)"; \
+          export FFLAGS="$(COMPILE_FLAGS)"; \
 	  ./configure  F77=$(F77) CC=$(CC) MPICC=$(MPICC) --prefix=$(PKGROOT) --enable-mpi --enable-openmp; \
 	  make \
 	)
