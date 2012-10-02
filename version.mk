@@ -1,4 +1,4 @@
-ROLLNAME = fftw$(ROLLSUFFIX)
+ROLLNAME = fftw
 RELEASE  = 3
 COLOR    = orange
 

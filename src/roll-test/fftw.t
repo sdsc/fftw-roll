@@ -1,26 +1,4 @@
-<?xml version="1.0" standalone="no"?>
-
-<kickstart>
-
-<description>
-FFTW roll installation test.
-http://www.fftw.org
-</description>
-
-<copyright>
-Copyright (c) 2000 - 2011 The Regents of the University of California.
-All rights reserved. Rocks(r) v5.1 www.rocksclusters.org
-</copyright>
-
-<changelog>
-</changelog>
-
-<post>
-
-/bin/mkdir -m 0755 /root/rolltests
-
-<file name="/root/rolltests/fftw.t" perms="0755">
-<![CDATA[#!/usr/bin/perl -w
+#!/usr/bin/perl -w
 # fftw roll installation test.  Usage:
 # fftw.t [nodetype]
 #   where nodetype is one of "Compute", "Dbnode", "Frontend" or "Login"
@@ -35,20 +13,10 @@ my $output;
 
 my $TESTFILE = 'rollfftw';
 
-my @COMPILERS = (
-  'ROLLCOMPILER',
-);
-my @NETWORKS = (
-  'ROLLNETWORK',
-);
-my @MPIS = (
-  'ROLLMPI',
-);
-my %CC = (
-  'gnu' => 'gcc',
-  'intel' => 'icc',
-  'pgi' => 'pgcc'
-);
+my @COMPILERS = split(/\s+/, 'ROLLCOMPILER');
+my @NETWORKS = split(/\s+/, 'ROLLNETWORK');
+my @MPIS = split(/\s+/, 'ROLLMPI');
+my %CC = ('gnu' => 'gcc', 'intel' => 'icc', 'pgi' => 'pgcc');
 
 open(OUT, ">$TESTFILE.c");
 print OUT <<END;
@@ -172,9 +140,3 @@ SKIP: {
 }
 
 `rm -f $TESTFILE*`;
-]]>
-</file>
-
-</post>
-
-</kickstart> 
