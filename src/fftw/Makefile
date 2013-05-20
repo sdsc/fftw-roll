@@ -54,18 +54,12 @@
 #
 # @Copyright@
 
-ifndef ROLLCOMPILER
-  ROLLCOMPILER = gnu
-endif
-ifndef ROLLNETWORK
-  ROLLNETWORK = eth
-endif
-ifndef ROLLMPI
-  ROLLMPI = openmpi
-endif
+ROLLCOMPILER = intel
+ROLLNETWORK = ib
+ROLLMPI = mvapich2
 
-PKGROOT = /opt/fftw/$(VERSION)/$(ROLLCOMPILER)/$(ROLLMPI)/$(ROLLNETWORK)
-SOURCE = fftw-$(VERSION)
+PKGROOT = /opt/beagle/$(VERSION)
+SOURCE = beagle-$(VERSION)
 REDHAT.ROOT = $(PWD)/../../
 RPM.EXTRAS=%define __os_install_post /usr/lib/rpm/brp-compress
 
@@ -76,54 +70,26 @@ COMPILERSETUP = \
     . /etc/profile.d/modules.sh; \
     latestModule=`module avail 2>&1 | grep -o '$(ROLLCOMPILER)/[^ (]*' | sed 's/$(ROLLCOMPILER).//' | sort -t. -k1,1n -k2,2n -k3,3n | tail -1`; \
     module load $(ROLLCOMPILER)/$${latestModule}; \
+    module load gnubase; \
   fi
 
-ifeq ("$(ROLLNETWORK)", "eth")
-  MPIMODULE = $(ROLLMPI)
-else
-  MPIMODULE = $(ROLLMPI)_$(ROLLNETWORK)
-endif
-
-MPISETUP = \
-  if test -e /etc/profile.d/modules.sh; then \
-    . /etc/profile.d/modules.sh; \
-    module load $(MPIMODULE); \
-  fi; \
-  export MPI_HOME=`which mpicxx | perl -pe 's!/bin/.*!!'`; \
-  if test -z "$${MPI_HOME}"; then \
-    export MPI_HOME=/opt/$(ROLLMPI); \
-  fi; \
-  echo Using MPI from $${MPI_HOME}; \
-  export PATH=$${PATH}:$${MPI_HOME}/bin; \
-  export LD_LIBRARY_PATH=$${LD_LIBRARY_PATH}:$${MPI_HOME}/lib
-
-CONFIG_OPTIONS = --enable-openmp --enable-mpi --enable-threads
+CONFIG_OPTIONS = --enable-sse
 COMPILE_FLAGS = -O2
-MPICC=mpicc
-ifeq ("$(ROLLCOMPILER)", "intel")
-  CCOMP = icc
-  FCOMP = ifort
-  COMPILE_FLAGS = -O3 -fp-model precise -prec_div -prec_sqrt -ftz -xHOST
-else ifeq ("$(ROLLCOMPILER)", "pgi")
-  CCOMP = pgcc
-  FCOMP = pgf77
-  COMPILE_FLAGS = -fast -fpic -Mflushz -Mdaz -Kieee -Mlarge_arrays
-endif
-ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
-  CONFIG_OPTIONS += --enable-avx
-endif
+CCOMP = icc
+CXXCOMP = icpc
+COMPILE_FLAGS = -O3 -fp-model precise -prec_div -prec_sqrt -ftz -xHOST
 
 build:
 	tar zxvf $(SOURCE).tar.gz
 	( \
-	  $(COMPILERSETUP); \
-	  $(MPISETUP); \
 	  export CC=$(CCOMP); \
 	  export CFLAGS="$(COMPILE_FLAGS)"; \
-	  export F77=$(FCOMP); \
-	  export FFLAGS="$(COMPILE_FLAGS)"; \
-	  cd $(SOURCE); \
-	  ./configure F77=$(FCOMP) CC=$(CCOMP) MPICC=$(MPICC) --prefix=$(PKGROOT) $(CONFIG_OPTIONS);  \
+	  export CXX=$(CXXCOMP); \
+	  export CXXFLAGS="$(COMPILE_FLAGS)"; \
+          $(COMPILERSETUP); \
+	  cd $(SOURCE) ; \
+	  sh ./autogen.sh ; \
+	  ./configure --prefix=$(PKGROOT) --libdir=$(PKGROOT)/lib $(CONFIG_OPTIONS);  \
 	  make \
 	)
 
@@ -132,7 +98,7 @@ install::
 	mkdir -p -m 755 $(PKGROOT)
 	mount --bind $(ROOT)/$(PKGROOT) $(PKGROOT)
 	( \
-	  cd $(SOURCE); \
+	  cd $(SOURCE) ; \
 	  make prefix=$(PKGROOT) install \
 	)
 	umount $(PKGROOT)
