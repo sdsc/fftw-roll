@@ -74,7 +74,7 @@ RPM.EXTRAS=%define __os_install_post /usr/lib/rpm/brp-compress
 COMPILERSETUP = \
   if test -e /etc/profile.d/modules.sh; then \
     . /etc/profile.d/modules.sh; \
-    latestModule=`module avail 2>&1 | grep -o '$(ROLLCOMPILER)/[^ (]*' | sed 's/$(ROLLCOMPILER).//' | sort -t. -k1,1n -k2,2n -k3,3n | tail -1`; \
+   latestModule=`module avail 2>&1 | grep -o '$(ROLLCOMPILER)/[^ (]*' | sed 's/$(ROLLCOMPILER).//' | sort -t. -k1,1n -k2,2n -k3,3n | tail -1`; \
     module load $(ROLLCOMPILER)/$${latestModule}; \
   fi
 
@@ -122,6 +122,10 @@ build:
 	  cd $(SOURCE); \
           export CFLAGS="$(COMPILE_FLAGS)"; \
           export FFLAGS="$(COMPILE_FLAGS)"; \
+          \
+          export LD_LIBRARY_PATH=/opt/gnu/gmp/4.3.2/lib:$${LD_LIBRARY_PATH}; \
+          export LD_PRELOAD=$(REDHAT.ROOT)/src/gmpn_srq_n.so; \
+          \
 	  ./configure  F77=$(F77) CC=$(CC) MPICC=$(MPICC) --prefix=$(PKGROOT) --enable-mpi --enable-openmp; \
 	  make \
 	)
@@ -132,6 +136,10 @@ install::
 	mount --bind $(ROOT)/$(PKGROOT) $(PKGROOT)
 	( \
 	  cd $(SOURCE); \
+          \
+          export LD_LIBRARY_PATH=/opt/gnu/gmp/4.3.2/lib:$${LD_LIBRARY_PATH}; \
+          export LD_PRELOAD=$(REDHAT.ROOT)/src/gmpn_srq_n.so; \
+          \
 	  make prefix=$(PKGROOT) install \
 	)
 	umount $(PKGROOT)
