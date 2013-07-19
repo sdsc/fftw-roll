@@ -98,16 +98,16 @@ MPISETUP = \
   export LD_LIBRARY_PATH=$${LD_LIBRARY_PATH}:$${MPI_HOME}/lib
 
 CONFIG_OPTIONS = --enable-openmp --enable-mpi --enable-threads
-COMPILE_FLAGS = -O2
+COMPILE_FLAGS = -O2 -fPIC
 MPICC=mpicc
 ifeq ("$(ROLLCOMPILER)", "intel")
   CCOMP = icc
   FCOMP = ifort
-  COMPILE_FLAGS = -O3 -fp-model precise -prec_div -prec_sqrt -ftz -xHOST
+  COMPILE_FLAGS = -O3 -fp-model precise -prec_div -prec_sqrt -ftz -xHOST -fPIC
 else ifeq ("$(ROLLCOMPILER)", "pgi")
   CCOMP = pgcc
   FCOMP = pgf77
-  COMPILE_FLAGS = -fast -fpic -Mflushz -Mdaz -Kieee -Mlarge_arrays
+  COMPILE_FLAGS = -fast -fpic -Mflushz -Mdaz -Kieee -Mlarge_arrays -fPIC
 endif
 ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
   CONFIG_OPTIONS += --enable-avx
