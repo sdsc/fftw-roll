@@ -123,8 +123,7 @@ build:
           export CFLAGS="$(COMPILE_FLAGS)"; \
           export FFLAGS="$(COMPILE_FLAGS)"; \
           \
-          export LD_LIBRARY_PATH=/opt/gnu/gmp/4.3.2/lib:$${LD_LIBRARY_PATH}; \
-          export LD_PRELOAD=$(REDHAT.ROOT)/src/gmpn_srq_n.so; \
+          export LD_LIBRARY_PATH=/opt/gnu/gmp/lib:$${LD_LIBRARY_PATH}; \
           \
 	  ./configure  F77=$(F77) CC=$(CC) MPICC=$(MPICC) --prefix=$(PKGROOT) --enable-mpi --enable-openmp; \
 	  make \
