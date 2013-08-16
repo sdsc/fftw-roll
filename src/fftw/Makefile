@@ -110,7 +110,9 @@ else ifeq ("$(ROLLCOMPILER)", "pgi")
   COMPILE_FLAGS = -fast -fpic -Mflushz -Mdaz -Kieee -Mlarge_arrays -fPIC
 endif
 ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
+ifneq ("$(ROLLCOMPILER)", "pgi")
   CONFIG_OPTIONS += --enable-avx
+endif
 endif
 
 build:
