@@ -99,7 +99,7 @@ MPISETUP = \
   export PATH=$${PATH}:$${MPI_HOME}/bin; \
   export LD_LIBRARY_PATH=$${LD_LIBRARY_PATH}:$${MPI_HOME}/lib
 
-CONFIG_OPTIONS = --enable-openmp --enable-mpi --enable-threads
+CONFIG_OPTIONS = --enable-openmp --enable-mpi --enable-threads --enable-shared
 COMPILE_FLAGS = -O2 -fPIC
 MPICC=mpicc
 ifeq ("$(ROLLCOMPILER)", "intel")
@@ -138,11 +138,10 @@ install::
 	mkdir -p -m 755 $(PKGROOT)
 	mount --bind $(ROOT)/$(PKGROOT) $(PKGROOT)
 	( \
+	  $(COMPILERSETUP); \
+	  $(MPISETUP); \
 	  cd $(SOURCE_DIR); \
-          \
           export LD_LIBRARY_PATH=/opt/gnu/gmp/4.3.2/lib:$${LD_LIBRARY_PATH}; \
-          export LD_PRELOAD=$(REDHAT.ROOT)/src/gmpn_srq_n.so; \
-          \
 	  make prefix=$(PKGROOT) install \
 	)
 	umount $(PKGROOT)
