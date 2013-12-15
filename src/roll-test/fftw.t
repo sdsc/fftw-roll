@@ -104,7 +104,7 @@ SKIP: {
           $output = `. /etc/profile.d/modules.sh; module load $compiler ${mpi}_$network fftw; $CC{$compiler} -DFFTW3 -I\$FFTWHOME/include -L\$FFTWHOME/lib -o $TESTFILE.$compiler.exe $TESTFILE.c -lfftw3 -lm`;
           ok(-f "$TESTFILE.$compiler.exe",
              "compile/link using fftw/latest/$compiler/$mpi");
-          $output = `./$TESTFILE.$compiler.exe`;
+          $output = `. /etc/profile.d/modules.sh; module load $compiler ${mpi}_$network fftw;./$TESTFILE.$compiler.exe`;
           like($output, qr/{ {6.00, 0.00} {-2.00, 2.00} {-2.00, 0.00} {-2.00, -2.00} }/, "run using fftw/latest/$compiler/$mpi");
         }
       }
@@ -123,7 +123,7 @@ SKIP: {
           $output = `. /etc/profile.d/modules.sh; module load $compiler ${mpi}_$network fftw/2.1.5; $CC{$compiler} -I\$FFTWHOME/include -L\$FFTWHOME/lib -o $TESTFILE.$compiler.$mpi.exe $TESTFILE.c -lfftw -lm`;
           ok(-f "$TESTFILE.$compiler.$mpi.exe",
              "compile/link using fftw/2.1.5/$compiler/$mpi");
-          $output = `./$TESTFILE.$compiler.$mpi.exe`;
+          $output = `. /etc/profile.d/modules.sh; module load $compiler ${mpi}_$network fftw;./$TESTFILE.$compiler.exe`;
           like($output, qr/{ {6.00, 0.00} {-2.00, 2.00} {-2.00, 0.00} {-2.00, -2.00} }/,
                "run using fftw/2.1.5/$compiler/$mpi");
         }
