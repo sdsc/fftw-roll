@@ -1,6 +1,6 @@
 NAME               = fftw_2.1.5_$(ROLLCOMPILER)_$(ROLLMPI)_$(ROLLNETWORK)
 VERSION            = 2.1.5
-RELEASE            = 0
+RELEASE            = 4
 PKGROOT            = /opt/fftw/$(VERSION)/$(ROLLCOMPILER)/$(ROLLMPI)/$(ROLLNETWORK)
 
 SRC_SUBDIR         = fftw_2.1.5
