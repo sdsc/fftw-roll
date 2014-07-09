@@ -1,7 +1,18 @@
-NAME               = fftw_2.1.5_$(ROLLCOMPILER)_$(ROLLMPI)_$(ROLLNETWORK)
+ifndef ROLLNETWORK
+  ROLLNETWORK = eth
+endif
+ifndef ROLLMPI
+  ROLLMPI = openmpi
+endif
+ifndef ROLLCOMPILER
+  ROLLCOMPILER = gnu
+endif
+COMPILERNAME := $(firstword $(subst /, ,$(ROLLCOMPILER)))
+
+NAME               = fftw_2.1.5_$(COMPILERNAME)_$(ROLLMPI)_$(ROLLNETWORK)
 VERSION            = 2.1.5
-RELEASE            = 4
-PKGROOT            = /opt/fftw/$(VERSION)/$(ROLLCOMPILER)/$(ROLLMPI)/$(ROLLNETWORK)
+RELEASE            = 5
+PKGROOT            = /opt/fftw/$(VERSION)/$(COMPILERNAME)/$(ROLLMPI)/$(ROLLNETWORK)
 
 SRC_SUBDIR         = fftw_2.1.5
 

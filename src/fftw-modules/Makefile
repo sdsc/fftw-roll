@@ -58,7 +58,7 @@
 # $Log$
 #
 
-PKGROOT = /opt/modulefiles/applications/.$(ROLLCOMPILER)/fftw
+PKGROOT = /opt/modulefiles/applications/.$(COMPILERNAME)/fftw
 REDHAT.ROOT = $(CURDIR)/../../
 
 -include $(ROCKSROOT)/etc/Rules.mk
@@ -72,8 +72,8 @@ install::
 	  cp fftw.version $(ROOT)/$(PKGROOT)/.version.$(VERSION)
 	  perl -pi -e 's/VERSION/$(VERSION)/g' $(ROOT)/$(PKGROOT)/$(VERSION)
 	  perl -pi -e 's/VERSION/$(VERSION)/g' $(ROOT)/$(PKGROOT)/.version.$(VERSION)
-	  perl -pi -e 's/ROLLCOMPILER/$(ROLLCOMPILER)/g' $(ROOT)/$(PKGROOT)/$(VERSION)
-	  perl -pi -e 's/ROLLCOMPILER/$(ROLLCOMPILER)/g' $(ROOT)/$(PKGROOT)/.version.$(VERSION)
+	  perl -pi -e 's/COMPILERNAME/$(COMPILERNAME)/g' $(ROOT)/$(PKGROOT)/$(VERSION)
+	  perl -pi -e 's/COMPILERNAME/$(COMPILERNAME)/g' $(ROOT)/$(PKGROOT)/.version.$(VERSION)
 	  ln -s $(PKGROOT)/.version.$(VERSION) $(ROOT)/$(PKGROOT)/.version
 
 clean::

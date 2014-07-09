@@ -66,24 +66,27 @@ END
 # fftw-common.xml
 $output = `find /opt/fftw -name bin | grep -vs 2.1.5`;
 foreach my $compiler (@COMPILERS) {
+  my $compilername = (split('/', $compiler))[0];
   foreach my $mpi (@MPIS) {
     if($appliance =~ /$installedOnAppliancesPattern/) {
-      like($output, qr#$compiler/$mpi#, "fftw latest/$compiler/$mpi installed");
+      like($output, qr#$compilername/$mpi#,
+           "fftw latest/$compilername/$mpi installed");
     } else {
-      unlike($output, qr#$compiler/$mpi#,
-             "fftw latest/$compiler/$mpi not installed");
+      unlike($output, qr#$compilername/$mpi#,
+             "fftw latest/$compilername/name$mpi not installed");
     }
   }
 }
 $output = `find /opt/fftw/2.1.5 -name fftw.h`;
 foreach my $compiler (@COMPILERS) {
+  my $compilername = (split('/', $compiler))[0];
   foreach my $mpi (@MPIS) {
     if($appliance =~ /$installedOnAppliancesPattern/) {
-      like($output, qr#$compiler/$mpi#,
-           "fftw v2.1.5/$compiler/$mpi installed");
+      like($output, qr#$compilername/$mpi#,
+           "fftw v2.1.5/$compilername/$mpi installed");
     } else {
-      unlike($output, qr#$compiler/$mpi#,
-             "fftw v2.1.5/$compiler/$mpi not installed");
+      unlike($output, qr#$compilername/$mpi#,
+             "fftw v2.1.5/$compilername/$mpi not installed");
     }
   }
 }
@@ -93,39 +96,41 @@ SKIP: {
   skip 'modules not installed', 1 if ! -f '/etc/profile.d/modules.sh';
 
   foreach my $compiler (@COMPILERS) {
+    my $compilername = (split('/', $compiler))[0];
     SKIP : {
       $output = `find /opt/fftw -name include | grep -vs 2.1.5`;
-      skip "fftw latest/$compiler not installed", 3
-        if $output !~ m#/$compiler/#;
-      ok(-l "/opt/modulefiles/applications/.$compiler/fftw/.version",
-         "module file for fftw/latest/$compiler installed");
+      skip "fftw latest/$compilername not installed", 3
+        if $output !~ m#/$compilername/#;
+      ok(-l "/opt/modulefiles/applications/.$compilername/fftw/.version",
+         "module file for fftw/latest/$compilername installed");
       foreach my $mpi (@MPIS) {
         foreach my $network (@NETWORKS) {
-          $output = `. /etc/profile.d/modules.sh; module load $compiler ${mpi}_$network fftw; $CC{$compiler} -DFFTW3 -I\$FFTWHOME/include -L\$FFTWHOME/lib -o $TESTFILE.$compiler.exe $TESTFILE.c -lfftw3 -lm`;
-          ok(-f "$TESTFILE.$compiler.exe",
-             "compile/link using fftw/latest/$compiler/$mpi");
-          $output = `. /etc/profile.d/modules.sh; module load $compiler ${mpi}_$network fftw;./$TESTFILE.$compiler.exe`;
-          like($output, qr/{ {6.00, 0.00} {-2.00, 2.00} {-2.00, 0.00} {-2.00, -2.00} }/, "run using fftw/latest/$compiler/$mpi");
+          $output = `. /etc/profile.d/modules.sh; module load $compiler ${mpi}_$network fftw; $CC{$compilername} -DFFTW3 -I\$FFTWHOME/include -L\$FFTWHOME/lib -o $TESTFILE.$compilername.exe $TESTFILE.c -lfftw3 -lm`;
+          ok(-f "$TESTFILE.$compilername.exe",
+             "compile/link using fftw/latest/$compilername/$mpi");
+          $output = `. /etc/profile.d/modules.sh; module load $compiler ${mpi}_$network fftw;./$TESTFILE.$compilername.exe`;
+          like($output, qr/{ {6.00, 0.00} {-2.00, 2.00} {-2.00, 0.00} {-2.00, -2.00} }/, "run using fftw/latest/$compilername/$mpi");
         }
       }
     }
   }
 
   foreach my $compiler (@COMPILERS) {
+    my $compilername = (split('/', $compiler))[0];
     SKIP: {
       $output = `find /opt/fftw -name include | grep 2.1.5`;
-      skip "fftw 2.1.5/$compiler not installed", 3
-        if $output !~ m#/$compiler/#;
-      ok(-f "/opt/modulefiles/applications/.$compiler/fftw/2.1.5",
-         "module file for fftw/2.1.5/$compiler installed");
+      skip "fftw 2.1.5/$compilername not installed", 3
+        if $output !~ m#/$compilername/#;
+      ok(-f "/opt/modulefiles/applications/.$compilername/fftw/2.1.5",
+         "module file for fftw/2.1.5/$compilername installed");
       foreach my $mpi (@MPIS) {
         foreach my $network (@NETWORKS) {
-          $output = `. /etc/profile.d/modules.sh; module load $compiler ${mpi}_$network fftw/2.1.5; $CC{$compiler} -I\$FFTWHOME/include -L\$FFTWHOME/lib -o $TESTFILE.$compiler.$mpi.exe $TESTFILE.c -lfftw -lm`;
-          ok(-f "$TESTFILE.$compiler.$mpi.exe",
-             "compile/link using fftw/2.1.5/$compiler/$mpi");
-          $output = `. /etc/profile.d/modules.sh; module load $compiler ${mpi}_$network fftw;./$TESTFILE.$compiler.exe`;
+          $output = `. /etc/profile.d/modules.sh; module load $compiler ${mpi}_$network fftw/2.1.5; $CC{$compilername} -I\$FFTWHOME/include -L\$FFTWHOME/lib -o $TESTFILE.$compilername.$mpi.exe $TESTFILE.c -lfftw -lm`;
+          ok(-f "$TESTFILE.$compilername.$mpi.exe",
+             "compile/link using fftw/2.1.5/$compilername/$mpi");
+          $output = `. /etc/profile.d/modules.sh; module load $compiler ${mpi}_$network fftw;./$TESTFILE.$compilername.exe`;
           like($output, qr/{ {6.00, 0.00} {-2.00, 2.00} {-2.00, 0.00} {-2.00, -2.00} }/,
-               "run using fftw/2.1.5/$compiler/$mpi");
+               "run using fftw/2.1.5/$compilername/$mpi");
         }
       }
     }

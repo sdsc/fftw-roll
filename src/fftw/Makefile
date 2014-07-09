@@ -56,16 +56,6 @@
 #
 # $Log$
 
-ifndef ROLLCOMPILER
-  ROLLCOMPILER = gnu
-endif
-ifndef ROLLNETWORK
-  ROLLNETWORK = eth
-endif
-ifndef ROLLMPI
-  ROLLMPI = openmpi
-endif
-
 REDHAT.ROOT = $(CURDIR)/../../
 RPM.EXTRAS=%define __os_install_post /usr/lib/rpm/brp-compress
 
@@ -76,6 +66,11 @@ include pull.mk
 COMPILERSETUP = \
   if test -e /etc/profile.d/modules.sh; then \
     . /etc/profile.d/modules.sh; \
+    module=`module avail 2>&1 | grep -o -m1 "\<$(ROLLCOMPILER)\>"`; \
+    if test "$${module}" != "$(ROLLCOMPILER)"; then \
+      echo *** ERROR: Compiler $(ROLLCOMPILER) not found; \
+      exit 2; \
+    fi; \
     module load $(ROLLCOMPILER); \
   fi
 
@@ -88,6 +83,11 @@ endif
 MPISETUP = \
   if test -e /etc/profile.d/modules.sh; then \
     . /etc/profile.d/modules.sh; \
+    module=`module avail 2>&1 | grep -o -m1 "\<$(MPIMODULE)\>"`; \
+    if test "$${module}" != "$(MPIMODULE)"; then \
+      echo *** ERROR: MPI module $(MPIMODULE) not found; \
+      exit 2; \
+    fi; \
     module load $(MPIMODULE); \
   fi; \
   export MPI_HOME=`which mpicxx | perl -pe 's!/bin/.*!!'`; \
@@ -101,17 +101,17 @@ MPISETUP = \
 CONFIG_OPTIONS = --enable-openmp --enable-mpi --enable-threads --enable-shared
 COMPILE_FLAGS = -O2 -fPIC
 MPICC=mpicc
-ifeq ("$(ROLLCOMPILER)", "intel")
+ifeq ("$(COMPILERNAME)", "intel")
   CCOMP = icc
   FCOMP = ifort
   COMPILE_FLAGS = -O3 -fp-model precise -prec_div -prec_sqrt -ftz -xHOST -fPIC
-else ifeq ("$(ROLLCOMPILER)", "pgi")
+else ifeq ("$(COMPILERNAME)", "pgi")
   CCOMP = pgcc
   FCOMP = pgf77
   COMPILE_FLAGS = -fast -fpic -Mflushz -Mdaz -Kieee -Mlarge_arrays -fPIC
 endif
 ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
-ifneq ("$(ROLLCOMPILER)", "pgi")
+ifneq ("$(COMPILERNAME)", "pgi")
   CONFIG_OPTIONS += --enable-avx
 endif
 endif
@@ -125,25 +125,18 @@ build: $(SRC_DIRS)
 	  export F77=$(FCOMP); \
 	  export FFLAGS="$(COMPILE_FLAGS)"; \
 	  cd $(SOURCE_DIR); \
-          \
-          export LD_LIBRARY_PATH=/opt/gnu/gmp/lib:$${LD_LIBRARY_PATH}; \
 	  ./configure F77=$(FCOMP) CC=$(CCOMP) MPICC=$(MPICC) --prefix=$(PKGROOT) $(CONFIG_OPTIONS);  \
 	  $(MAKE) \
 	)
 	@echo "::: Package $(NAME) build complete :::"
 
 install::
-	mkdir -p -m 755 $(ROOT)/$(PKGROOT)
-	mkdir -p -m 755 $(PKGROOT)
-	mount --bind $(ROOT)/$(PKGROOT) $(PKGROOT)
 	( \
 	  $(COMPILERSETUP); \
 	  $(MPISETUP); \
 	  cd $(SOURCE_DIR); \
-          export LD_LIBRARY_PATH=/opt/gnu/gmp/4.3.2/lib:$${LD_LIBRARY_PATH}; \
-	  make prefix=$(PKGROOT) install \
+	  make prefix=$(ROOT)/$(PKGROOT) install \
 	)
-	umount $(PKGROOT)
 	@echo "::: Package $(NAME) install complete :::"
 
 clean::
