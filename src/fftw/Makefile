@@ -68,7 +68,7 @@ COMPILERSETUP = \
     . /etc/profile.d/modules.sh; \
     module=`module avail 2>&1 | grep -o -m1 "\<$(ROLLCOMPILER)\>"`; \
     if test "$${module}" != "$(ROLLCOMPILER)"; then \
-      echo *** ERROR: Compiler $(ROLLCOMPILER) not found; \
+      echo *** ERROR: Compiler module $(ROLLCOMPILER) not found; \
       exit 2; \
     fi; \
     module load $(ROLLCOMPILER); \
@@ -111,9 +111,9 @@ else ifeq ("$(COMPILERNAME)", "pgi")
   COMPILE_FLAGS = -fast -fpic -Mflushz -Mdaz -Kieee -Mlarge_arrays -fPIC
 endif
 ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
-ifneq ("$(COMPILERNAME)", "pgi")
-  CONFIG_OPTIONS += --enable-avx
-endif
+  ifneq ("$(COMPILERNAME)", "pgi")
+    CONFIG_OPTIONS += --enable-avx
+  endif
 endif
 
 build: $(SRC_DIRS)
@@ -125,7 +125,8 @@ build: $(SRC_DIRS)
 	  export F77=$(FCOMP); \
 	  export FFLAGS="$(COMPILE_FLAGS)"; \
 	  cd $(SOURCE_DIR); \
-	  ./configure F77=$(FCOMP) CC=$(CCOMP) MPICC=$(MPICC) --prefix=$(PKGROOT) $(CONFIG_OPTIONS);  \
+	  ./configure F77=$(FCOMP) CC=$(CCOMP) MPICC=$(MPICC) \
+	              --prefix=$(PKGROOT) $(CONFIG_OPTIONS);  \
 	  $(MAKE) \
 	)
 	@echo "::: Package $(NAME) build complete :::"

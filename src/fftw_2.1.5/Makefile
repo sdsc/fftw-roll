@@ -68,7 +68,7 @@ COMPILERSETUP = \
     . /etc/profile.d/modules.sh; \
     module=`module avail 2>&1 | grep -o -m1 "\<$(ROLLCOMPILER)\>"`; \
     if test "$${module}" != "$(ROLLCOMPILER)"; then \
-      echo *** ERROR: Compiler $(ROLLCOMPILER) not found; \
+      echo *** ERROR: Compiler module $(ROLLCOMPILER) not found; \
       exit 2; \
     fi; \
     module load $(ROLLCOMPILER); \
@@ -110,8 +110,11 @@ else ifeq ("$(COMPILERNAME)", "pgi")
   CC = pgcc
   F77 = pgf77
   COMPILE_FLAGS = -fast
-else ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
-  COMPILE_FLAGS += -mavx
+endif
+ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
+  ifeq ("$(COMPILERNAME)", "gnu")
+    COMPILE_FLAGS += -mavx
+  endif
 endif
 
 build: $(SRC_DIRS)
@@ -121,7 +124,8 @@ build: $(SRC_DIRS)
 	  cd $(SOURCE_DIR); \
           export CFLAGS="$(COMPILE_FLAGS)"; \
           export FFLAGS="$(COMPILE_FLAGS)"; \
-	  ./configure  F77=$(F77) CC=$(CC) MPICC=$(MPICC) --prefix=$(PKGROOT) --enable-mpi --enable-openmp; \
+	  ./configure F77=$(F77) CC=$(CC) MPICC=$(MPICC) \
+	              --prefix=$(PKGROOT) --enable-mpi --enable-openmp; \
 	  $(MAKE) \
 	)
 	@echo "::: Package $(NAME) build complete :::"
@@ -129,8 +133,6 @@ build: $(SRC_DIRS)
 install::
 	( \
 	  cd $(SOURCE_DIR); \
-          export LD_LIBRARY_PATH=/opt/gnu/gmp/4.3.2/lib:$${LD_LIBRARY_PATH}; \
-          export LD_PRELOAD=$(REDHAT.ROOT)/src/gmpn_srq_n.so; \
 	  make prefix=$(ROOT)/$(PKGROOT) install \
 	)
 	@echo "::: Package $(NAME) install complete :::"
