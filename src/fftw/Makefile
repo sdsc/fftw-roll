@@ -117,6 +117,12 @@ ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
 endif
 
 build: $(SRC_DIRS)
+	@echo "::: Package $(NAME) build complete :::"
+
+install::
+	mkdir -p $(ROOT)/$(PKGROOT)
+	mkdir -p $(PKGROOT)
+	mount --bind $(ROOT)/$(PKGROOT) $(PKGROOT)
 	( \
 	  $(COMPILERSETUP); \
 	  $(MPISETUP); \
@@ -127,17 +133,18 @@ build: $(SRC_DIRS)
 	  cd $(SOURCE_DIR); \
 	  ./configure F77=$(FCOMP) CC=$(CCOMP) MPICC=$(MPICC) \
 	              --prefix=$(PKGROOT) $(CONFIG_OPTIONS);  \
-	  $(MAKE) \
+	  $(MAKE); \
+	  $(MAKE) install; \
+          cd ..; \
+          rm -rf $(SOURCE_DIR); \
+          tar xvzf $(SOURCE_PKG); \
+          cd $(SOURCE_DIR); \
+	  ./configure F77=$(FCOMP) CC=$(CCOMP) MPICC=$(MPICC) \
+	       --enable-single --prefix=$(PKGROOT) $(CONFIG_OPTIONS);  \
+	  $(MAKE); \
+	  $(MAKE) install;  \
 	)
-	@echo "::: Package $(NAME) build complete :::"
-
-install::
-	( \
-	  $(COMPILERSETUP); \
-	  $(MPISETUP); \
-	  cd $(SOURCE_DIR); \
-	  make prefix=$(ROOT)/$(PKGROOT) install \
-	)
+	-umount $(PKGROOT)
 	@echo "::: Package $(NAME) install complete :::"
 
 clean::
