@@ -114,9 +114,6 @@ build: $(SRC_DIRS)
 	@echo "::: Package $(NAME) build complete :::"
 
 install::
-	mkdir -p $(ROOT)/$(PKGROOT)
-	mkdir -p $(PKGROOT)
-	mount --bind $(ROOT)/$(PKGROOT) $(PKGROOT)
 	( \
 	  $(COMPILERSETUP); \
 	  $(MPISETUP); \
@@ -128,17 +125,13 @@ install::
 	  ./configure F77=$(FC) CC=$(CC) MPICC=$(MPICC) \
 	              --prefix=$(PKGROOT) $(CONFIG_OPTIONS);  \
 	  $(MAKE); \
-	  $(MAKE) install; \
-          cd ..; \
-          rm -rf $(SOURCE_DIR); \
-          tar xvzf $(SOURCE_PKG); \
-          cd $(SOURCE_DIR); \
-	  ./configure F77=$(FCOMP) CC=$(CCOMP) MPICC=$(MPICC) \
+	  $(MAKE) prefix=$(ROOT)/$(PKGROOT) install; \
+	  $(MAKE) clean; \
+	  ./configure F77=$(FC) CC=$(CC) MPICC=$(MPICC) \
 	       --enable-single --prefix=$(PKGROOT) $(CONFIG_OPTIONS);  \
 	  $(MAKE); \
-	  $(MAKE) install;  \
+	  $(MAKE) prefix=$(ROOT)/$(PKGROOT) install;  \
 	)
-	-umount $(PKGROOT)
 	@echo "::: Package $(NAME) install complete :::"
 
 clean::
