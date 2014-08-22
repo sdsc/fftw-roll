@@ -31,6 +31,38 @@ print OUT <<END;
 
 #define N 4
 
+#ifdef FFTW_SINGLE
+int main(int argc, char **argv) {
+  fftwf_complex *in, *out;
+  fftwf_plan p;
+  int i;
+
+  in = (fftwf_complex*) fftwf_malloc(sizeof(fftwf_complex) * N);
+  out = (fftwf_complex*) fftwf_malloc(sizeof(fftwf_complex) * N);
+
+  for(i = 0; i < N; i++) {
+    c_re(in[i]) = i;
+    c_im(in[i]) = 0.0;
+  }
+
+#ifdef FFTW3
+  p = fftwf_plan_dft_1d(N, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
+  fftwf_execute(p);
+#else
+  p = fftwf_create_plan(N, FFTW_FORWARD, FFTW_ESTIMATE);
+  fftwf(p, 1, in, 1, 0, out, 1, 0);
+#endif
+
+  fprintf(stdout, "{");
+  for(i = 0 ; i < N; i++) {
+    fprintf(stdout, " {%2.2f, %2.2f}", c_re(out[i]), c_im(out[i]));
+  }
+  fprintf(stdout, " }\\n");
+
+  fftwf_destroy_plan(p);
+  fftwf_free(in); fftwf_free(out);
+}
+#else
 int main(int argc, char **argv) {
   fftw_complex *in, *out;
   fftw_plan p;
@@ -61,6 +93,7 @@ int main(int argc, char **argv) {
   fftw_destroy_plan(p);
   fftw_free(in); fftw_free(out);
 }
+#endif
 END
 
 # fftw-common.xml
@@ -109,7 +142,14 @@ SKIP: {
           ok(-f "$TESTFILE.$compilername.exe",
              "compile/link using fftw/latest/$compilername/$mpi");
           $output = `. /etc/profile.d/modules.sh; module load $compiler ${mpi}_$network fftw;./$TESTFILE.$compilername.exe`;
-          like($output, qr/{ {6.00, 0.00} {-2.00, 2.00} {-2.00, 0.00} {-2.00, -2.00} }/, "run using fftw/latest/$compilername/$mpi");
+          like($output, qr/{ {6.00, 0.00} {-2.00, 2.00} {-2.00, 0.00} {-2.00, -2.00} }/, "run using fftw/latest/$compilername/$mpi double precision");
+
+          $output = `. /etc/profile.d/modules.sh; module load $compiler ${mpi}_$network fftw; $CC{$compilername} -DFFTW3 -DFFTW_SINGLE -I\$FFTWHOME/include -L\$FFTWHOME/lib -o $TESTFILE.$compilername.exe $TESTFILE.c -lfftw3f -lm`;
+          ok(-f "$TESTFILE.$compilername.exe",
+             "compile/link using fftw/latest/$compilername/$mpi");
+          $output = `. /etc/profile.d/modules.sh; module load $compiler ${mpi}_$network fftw;./$TESTFILE.$compilername.exe`;
+          like($output, qr/{ {6.00, 0.00} {-2.00, 2.00} {-2.00, 0.00} {-2.00, -2.00} }/, "run using fftw/latest/$compilername/$mpi single precision");
+
         }
       }
     }
