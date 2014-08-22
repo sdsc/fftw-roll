@@ -58,21 +58,39 @@
 
 REDHAT.ROOT = $(CURDIR)/../../
 RPM.EXTRAS=%define __os_install_post /usr/lib/rpm/brp-compress
+PKGROOT = /opt/fftw/$(VERSION)/$(COMPILERNAME)/$(ROLLMPI)/$(ROLLNETWORK)
 
 -include $(ROCKSROOT)/etc/Rules.mk
 include Rules.mk
 include pull.mk
 
-COMPILERSETUP = \
+CC = gcc
+COMPILE_FLAGS = -O2
+F77 = gfortran
+MPICC = mpicc
+ifeq ("$(COMPILERNAME)","intel")
+  CC = icc
+  COMPILE_FLAGS = -xHOST -O2
+  F77 = ifort
+else ifeq ("$(COMPILERNAME)","pgi")
+  CC = pgcc
+  COMPILE_FLAGS = -fast
+  F77 = pgf77
+endif
+
+ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
+  ifeq ("$(COMPILERNAME)", "gnu")
+    COMPILE_FLAGS += -mavx
+  endif
+endif
+
+COMPILERSETUP =  \
   if test -e /etc/profile.d/modules.sh; then \
     . /etc/profile.d/modules.sh; \
-    module=`module avail 2>&1 | grep -o -m1 "\<$(ROLLCOMPILER)\>"`; \
-    if test "$${module}" != "$(ROLLCOMPILER)"; then \
-      echo *** ERROR: Compiler module $(ROLLCOMPILER) not found; \
-      exit 2; \
-    fi; \
-    module load $(ROLLCOMPILER); \
-  fi
+    module load $(ROLLCOMPILER) || true; \
+  fi; \
+  echo === Compiler and version ===; \
+  $(CC) --version \
 
 ifeq ("$(ROLLNETWORK)", "eth")
   MPIMODULE = $(ROLLMPI)
@@ -83,47 +101,21 @@ endif
 MPISETUP = \
   if test -e /etc/profile.d/modules.sh; then \
     . /etc/profile.d/modules.sh; \
-    module=`module avail 2>&1 | grep -o -m1 "\<$(MPIMODULE)\>"`; \
-    if test "$${module}" != "$(MPIMODULE)"; then \
-      echo *** ERROR: MPI module $(MPIMODULE) not found; \
-      exit 2; \
-    fi; \
-    module load $(MPIMODULE); \
+    module load $(MPIMODULE) || true; \
   fi; \
-  export MPI_HOME=`which mpicxx | perl -pe 's!/bin/.*!!'`; \
-  if test -z "$${MPI_HOME}"; then \
-    export MPI_HOME=/opt/$(ROLLMPI); \
+  if test -z "$${MPIHOME}"; then \
+    export MPIHOME=/opt/$(ROLLMPI); \
   fi; \
-  echo Using MPI from $${MPI_HOME}; \
-  export PATH=$${PATH}:$${MPI_HOME}/bin; \
-  export LD_LIBRARY_PATH=$${LD_LIBRARY_PATH}:$${MPI_HOME}/lib
-
-CC = gcc
-F77 = gfortran
-MPICC = mpicc
-COMPILE_FLAGS = -O2
-ifeq ("$(COMPILERNAME)", "intel")
-  CC = icc
-  F77 = ifort
-  COMPILE_FLAGS = -xHOST -O2
-else ifeq ("$(COMPILERNAME)", "pgi")
-  CC = pgcc
-  F77 = pgf77
-  COMPILE_FLAGS = -fast
-endif
-ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
-  ifeq ("$(COMPILERNAME)", "gnu")
-    COMPILE_FLAGS += -mavx
-  endif
-endif
+  echo === MPIHOME ===; \
+  echo $${MPIHOME} \
 
 build: $(SRC_DIRS)
 	( \
 	  $(COMPILERSETUP); \
 	  $(MPISETUP); \
 	  cd $(SOURCE_DIR); \
-          export CFLAGS="$(COMPILE_FLAGS)"; \
-          export FFLAGS="$(COMPILE_FLAGS)"; \
+	  export CFLAGS="$(COMPILE_FLAGS)"; \
+	  export FFLAGS="$(COMPILE_FLAGS)"; \
 	  ./configure F77=$(F77) CC=$(CC) MPICC=$(MPICC) \
 	              --prefix=$(PKGROOT) --enable-mpi --enable-openmp; \
 	  $(MAKE) \

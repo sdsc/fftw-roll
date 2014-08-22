@@ -58,21 +58,40 @@
 
 REDHAT.ROOT = $(CURDIR)/../../
 RPM.EXTRAS=%define __os_install_post /usr/lib/rpm/brp-compress
+PKGROOT = /opt/fftw/$(VERSION)/$(COMPILERNAME)/$(ROLLMPI)/$(ROLLNETWORK)
 
 -include $(ROCKSROOT)/etc/Rules.mk
 include Rules.mk
 include pull.mk
 
-COMPILERSETUP = \
+CC = gcc
+COMPILE_FLAGS = -O2 -fPIC
+CONFIG_OPTIONS = --enable-openmp --enable-mpi --enable-threads --enable-shared
+FC = gfortran
+MPICC = mpicc
+ifeq ("$(COMPILERNAME)", "intel")
+  CC = icc
+  COMPILE_FLAGS = -O3 -fp-model precise -prec_div -prec_sqrt -ftz -xHOST -fPIC
+  FC = ifort
+else ifeq ("$(COMPILERNAME)", "pgi")
+  CC = pgcc
+  COMPILE_FLAGS = -fast -fpic -Mflushz -Mdaz -Kieee -Mlarge_arrays -fPIC
+  FC = pgf77
+endif
+
+ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
+  ifneq ("$(COMPILERNAME)", "pgi")
+    CONFIG_OPTIONS += --enable-avx
+  endif
+endif
+
+COMPILERSETUP =  \
   if test -e /etc/profile.d/modules.sh; then \
     . /etc/profile.d/modules.sh; \
-    module=`module avail 2>&1 | grep -o -m1 "\<$(ROLLCOMPILER)\>"`; \
-    if test "$${module}" != "$(ROLLCOMPILER)"; then \
-      echo *** ERROR: Compiler module $(ROLLCOMPILER) not found; \
-      exit 2; \
-    fi; \
-    module load $(ROLLCOMPILER); \
-  fi
+    module load $(ROLLCOMPILER) || true; \
+  fi; \
+  echo === Compiler and version ===; \
+  $(CC) --version \
 
 ifeq ("$(ROLLNETWORK)", "eth")
   MPIMODULE = $(ROLLMPI)
@@ -83,49 +102,24 @@ endif
 MPISETUP = \
   if test -e /etc/profile.d/modules.sh; then \
     . /etc/profile.d/modules.sh; \
-    module=`module avail 2>&1 | grep -o -m1 "\<$(MPIMODULE)\>"`; \
-    if test "$${module}" != "$(MPIMODULE)"; then \
-      echo *** ERROR: MPI module $(MPIMODULE) not found; \
-      exit 2; \
-    fi; \
-    module load $(MPIMODULE); \
+    module load $(MPIMODULE) || true; \
   fi; \
-  export MPI_HOME=`which mpicxx | perl -pe 's!/bin/.*!!'`; \
-  if test -z "$${MPI_HOME}"; then \
-    export MPI_HOME=/opt/$(ROLLMPI); \
+  if test -z "$${MPIHOME}"; then \
+    export MPIHOME=/opt/$(ROLLMPI); \
   fi; \
-  echo Using MPI from $${MPI_HOME}; \
-  export PATH=$${PATH}:$${MPI_HOME}/bin; \
-  export LD_LIBRARY_PATH=$${LD_LIBRARY_PATH}:$${MPI_HOME}/lib
-
-CONFIG_OPTIONS = --enable-openmp --enable-mpi --enable-threads --enable-shared
-COMPILE_FLAGS = -O2 -fPIC
-MPICC=mpicc
-ifeq ("$(COMPILERNAME)", "intel")
-  CCOMP = icc
-  FCOMP = ifort
-  COMPILE_FLAGS = -O3 -fp-model precise -prec_div -prec_sqrt -ftz -xHOST -fPIC
-else ifeq ("$(COMPILERNAME)", "pgi")
-  CCOMP = pgcc
-  FCOMP = pgf77
-  COMPILE_FLAGS = -fast -fpic -Mflushz -Mdaz -Kieee -Mlarge_arrays -fPIC
-endif
-ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
-  ifneq ("$(COMPILERNAME)", "pgi")
-    CONFIG_OPTIONS += --enable-avx
-  endif
-endif
+  echo === MPIHOME ===; \
+  echo $${MPIHOME} \
 
 build: $(SRC_DIRS)
 	( \
 	  $(COMPILERSETUP); \
 	  $(MPISETUP); \
-	  export CC=$(CCOMP); \
+	  export CC=$(CC); \
 	  export CFLAGS="$(COMPILE_FLAGS)"; \
-	  export F77=$(FCOMP); \
+	  export F77=$(FC); \
 	  export FFLAGS="$(COMPILE_FLAGS)"; \
 	  cd $(SOURCE_DIR); \
-	  ./configure F77=$(FCOMP) CC=$(CCOMP) MPICC=$(MPICC) \
+	  ./configure F77=$(FC) CC=$(CC) MPICC=$(MPICC) \
 	              --prefix=$(PKGROOT) $(CONFIG_OPTIONS);  \
 	  $(MAKE) \
 	)
