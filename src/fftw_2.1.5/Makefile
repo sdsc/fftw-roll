@@ -58,7 +58,6 @@
 
 REDHAT.ROOT = $(CURDIR)/../../
 RPM.EXTRAS=%define __os_install_post /usr/lib/rpm/brp-compress
-PKGROOT = /opt/fftw/$(VERSION)/$(COMPILERNAME)/$(ROLLMPI)/$(ROLLNETWORK)
 
 -include $(ROCKSROOT)/etc/Rules.mk
 include Rules.mk

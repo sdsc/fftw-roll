@@ -3,7 +3,8 @@ ifndef ROLLCOMPILER
 endif
 COMPILERNAME := $(firstword $(subst /, ,$(ROLLCOMPILER)))
 
-NAME    = fftw-modules_$(COMPILERNAME)
-VERSION = 3.3.3
-RELEASE = 5
-RPM.EXTRAS         = AutoReq:No
+NAME       = fftw-modules_$(COMPILERNAME)
+VERSION    = 3.3.3
+RELEASE    = 5
+
+RPM.EXTRAS = AutoReq:No
