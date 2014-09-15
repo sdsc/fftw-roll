@@ -126,8 +126,6 @@ foreach my $compiler (@COMPILERS) {
 
 SKIP: {
 
-  skip 'modules not installed', 1 if ! -f '/etc/profile.d/modules.sh';
-
   foreach my $compiler (@COMPILERS) {
     my $compilername = (split('/', $compiler))[0];
     SKIP : {
@@ -138,16 +136,16 @@ SKIP: {
          "module file for fftw/latest/$compilername installed");
       foreach my $mpi (@MPIS) {
         foreach my $network (@NETWORKS) {
-          $output = `. /etc/profile.d/modules.sh; module load $compiler ${mpi}_$network fftw; $CC{$compilername} -DFFTW3 -I\$FFTWHOME/include -L\$FFTWHOME/lib -o $TESTFILE.$compilername.exe $TESTFILE.c -lfftw3 -lm`;
+          $output = `module load $compiler ${mpi}_$network fftw; $CC{$compilername} -DFFTW3 -I\$FFTWHOME/include -L\$FFTWHOME/lib -o $TESTFILE.$compilername.exe $TESTFILE.c -lfftw3 -lm`;
           ok(-f "$TESTFILE.$compilername.exe",
              "compile/link using fftw/latest/$compilername/$mpi");
-          $output = `. /etc/profile.d/modules.sh; module load $compiler ${mpi}_$network fftw;./$TESTFILE.$compilername.exe`;
+          $output = `module load $compiler ${mpi}_$network fftw;./$TESTFILE.$compilername.exe`;
           like($output, qr/{ {6.00, 0.00} {-2.00, 2.00} {-2.00, 0.00} {-2.00, -2.00} }/, "run using fftw/latest/$compilername/$mpi double precision");
 
-          $output = `. /etc/profile.d/modules.sh; module load $compiler ${mpi}_$network fftw; $CC{$compilername} -DFFTW3 -DFFTW_SINGLE -I\$FFTWHOME/include -L\$FFTWHOME/lib -o $TESTFILE.$compilername.exe $TESTFILE.c -lfftw3f -lm`;
+          $output = `module load $compiler ${mpi}_$network fftw; $CC{$compilername} -DFFTW3 -DFFTW_SINGLE -I\$FFTWHOME/include -L\$FFTWHOME/lib -o $TESTFILE.$compilername.exe $TESTFILE.c -lfftw3f -lm`;
           ok(-f "$TESTFILE.$compilername.exe",
              "compile/link using fftw/latest/$compilername/$mpi");
-          $output = `. /etc/profile.d/modules.sh; module load $compiler ${mpi}_$network fftw;./$TESTFILE.$compilername.exe`;
+          $output = `module load $compiler ${mpi}_$network fftw;./$TESTFILE.$compilername.exe`;
           like($output, qr/{ {6.00, 0.00} {-2.00, 2.00} {-2.00, 0.00} {-2.00, -2.00} }/, "run using fftw/latest/$compilername/$mpi single precision");
 
         }
@@ -165,10 +163,10 @@ SKIP: {
          "module file for fftw/2.1.5/$compilername installed");
       foreach my $mpi (@MPIS) {
         foreach my $network (@NETWORKS) {
-          $output = `. /etc/profile.d/modules.sh; module load $compiler ${mpi}_$network fftw/2.1.5; $CC{$compilername} -I\$FFTWHOME/include -L\$FFTWHOME/lib -o $TESTFILE.$compilername.$mpi.exe $TESTFILE.c -lfftw -lm`;
+          $output = `module load $compiler ${mpi}_$network fftw/2.1.5; $CC{$compilername} -I\$FFTWHOME/include -L\$FFTWHOME/lib -o $TESTFILE.$compilername.$mpi.exe $TESTFILE.c -lfftw -lm`;
           ok(-f "$TESTFILE.$compilername.$mpi.exe",
              "compile/link using fftw/2.1.5/$compilername/$mpi");
-          $output = `. /etc/profile.d/modules.sh; module load $compiler ${mpi}_$network fftw;./$TESTFILE.$compilername.exe`;
+          $output = `module load $compiler ${mpi}_$network fftw;./$TESTFILE.$compilername.exe`;
           like($output, qr/{ {6.00, 0.00} {-2.00, 2.00} {-2.00, 0.00} {-2.00, -2.00} }/,
                "run using fftw/2.1.5/$compilername/$mpi");
         }

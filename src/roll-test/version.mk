@@ -1,5 +1,5 @@
 NAME       = fftw-roll-test
 VERSION    = 1
-RELEASE    = 5
+RELEASE    = 6
 
 RPM.EXTRAS = AutoReq:No

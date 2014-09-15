@@ -13,7 +13,7 @@ endif
 
 NAME           = fftw_2.1.5_$(COMPILERNAME)_$(ROLLMPI)_$(ROLLNETWORK)
 VERSION        = 2.1.5
-RELEASE        = 6
+RELEASE        = 7
 PKGROOT        = /opt/fftw/$(VERSION)/$(COMPILERNAME)/$(ROLLMPI)/$(ROLLNETWORK)
 
 SRC_SUBDIR     = fftw_2.1.5
