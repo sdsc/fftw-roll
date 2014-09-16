@@ -176,10 +176,4 @@ SKIP: {
 
 }
 
-# fftw-doc.xml
-SKIP: {
-  skip 'not server', 1 if $appliance ne 'Frontend';
-  ok(-d '/var/www/html/roll-documentation/fftw', 'doc installed');
-}
-
 `rm -f $TESTFILE*`;
