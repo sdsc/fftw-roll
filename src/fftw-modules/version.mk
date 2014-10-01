@@ -3,11 +3,14 @@ ifndef ROLLCOMPILER
 endif
 COMPILERNAME := $(firstword $(subst /, ,$(ROLLCOMPILER)))
 
-NAME        = fftw-modules_$(COMPILERNAME)
-RELEASE     = 7
-PKGROOT     = /opt/modulefiles/applications/.$(COMPILERNAME)/fftw
+PACKAGE     = fftw
+CATEGORY    = applications
 
-VERSION_SRC = $(REDHAT.ROOT)/src/fftw/version.mk
+NAME        = $(PACKAGE)-modules_$(COMPILERNAME)
+RELEASE     = 8
+PKGROOT     = /opt/modulefiles/$(CATEGORY)/.$(COMPILERNAME)/$(PACKAGE)
+
+VERSION_SRC = $(REDHAT.ROOT)/src/$(PACKAGE)/version.mk
 VERSION_INC = version.inc
 include $(VERSION_INC)
 
