@@ -9,7 +9,7 @@ $(VERSION_INC): $(VERSION_SRC)
 	/bin/grep 'VERSION.*=' $(VERSION_SRC) > $@
 
 install::
-	mkdir -p $(ROOT)/$(PKGROOT)
+	mkdir -p -m 755 $(ROOT)/$(PKGROOT)
 	# Adapted for multiple versions
 	for V in $(VERSION) $(VERSION_ADD); do \
 	  cp *.module $(ROOT)/$(PKGROOT)/$$V; \
