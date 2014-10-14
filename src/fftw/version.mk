@@ -12,8 +12,8 @@ ifndef ROLLNETWORK
 endif
 
 NAME           = fftw_$(COMPILERNAME)_$(ROLLMPI)_$(ROLLNETWORK)
-VERSION        = 3.3.3
-RELEASE        = 7
+VERSION        = 3.3.4
+RELEASE        = 0
 PKGROOT        = /opt/fftw/$(VERSION)/$(COMPILERNAME)/$(ROLLMPI)/$(ROLLNETWORK)
 
 SRC_SUBDIR     = fftw
