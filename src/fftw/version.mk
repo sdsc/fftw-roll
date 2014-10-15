@@ -6,15 +6,12 @@ COMPILERNAME := $(firstword $(subst /, ,$(ROLLCOMPILER)))
 ifndef ROLLMPI
   ROLLMPI = openmpi
 endif
+MPINAME := $(firstword $(subst /, ,$(ROLLMPI)))
 
-ifndef ROLLNETWORK
-  ROLLNETWORK = eth
-endif
-
-NAME           = fftw_$(COMPILERNAME)_$(ROLLMPI)_$(ROLLNETWORK)
+NAME           = fftw_$(COMPILERNAME)_$(ROLLMPI)
 VERSION        = 3.3.4
-RELEASE        = 0
-PKGROOT        = /opt/fftw/$(VERSION)/$(COMPILERNAME)/$(ROLLMPI)/$(ROLLNETWORK)
+RELEASE        = 1
+PKGROOT        = /opt/fftw/$(VERSION)/$(COMPILERNAME)/$(ROLLMPI)
 
 SRC_SUBDIR     = fftw
 
