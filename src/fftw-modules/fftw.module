@@ -3,41 +3,24 @@ module-whatis "fftw"
 module-whatis "Version: VERSION"
 module-whatis "Description: fftw"
 module-whatis "Compiler: COMPILERNAME"
-if {! [info exists ::env(MPIHOME)]} {
-  puts stderr "Need to load an mpi module before loading fftw_VERSION"
+module-whatis "MPI Flavors: ROLLMPI"
+if {! [info exists ::env(MPIHOME)] || ! [info exists ::env(LOADEDMODULES)]} {
+  puts stderr "Need to load an mpi module before loading fftw/VERSION"
   exit 1
 }
-foreach {x} [glob -directory /opt/fftw/VERSION/COMPILERNAME -tails *] {
-  if {[regexp $x $::env(MPIHOME)]} {
+foreach {x} [list ROLLMPI] {
+  # Look for flavor in LOADEDMODULES, delimited by colon or end of string.
+  # Can also be followed by / (version number).
+  if {[regexp [format {[:^]%s[:/$]} $x] $::env(LOADEDMODULES)]} {
     set mpi $x
     break
-  }
-}
-if {! [info exists mpi]} {
-  if {[ regexp ScaleMP $::env(MPIHOME)]} {
-      set mpi vsmp
   }
 }
 if {! [info exists mpi]} {
   puts stderr "No supported MPI flavor found"
   exit 1
 }
-foreach {x} [glob -directory /opt/fftw/VERSION/COMPILERNAME/$mpi -tails *] {
-  if {[regexp $x $::env(MPIHOME)]} {
-    set network $x
-    break
-  }
-}
-if {! [info exists network]} {
-  if {[ regexp ScaleMP $::env(MPIHOME)]} {
-      set network ib
-  }
-}
-if {! [info exists network]} {
-  puts stderr "No supported network found"
-  exit 1
-}
-set fftwHome /opt/fftw/VERSION/COMPILERNAME/$mpi/$network
+set fftwHome /opt/fftw/VERSION/COMPILERNAME/$mpi
 setenv FFTWHOME $fftwHome
 prepend-path PATH $fftwHome/bin
 prepend-path LD_LIBRARY_PATH $fftwHome/lib

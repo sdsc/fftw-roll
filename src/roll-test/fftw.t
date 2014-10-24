@@ -14,7 +14,6 @@ my $output;
 my $TESTFILE = 'rollfftw';
 
 my @COMPILERS = split(/\s+/, 'ROLLCOMPILER');
-my @NETWORKS = split(/\s+/, 'ROLLNETWORK');
 my @MPIS = split(/\s+/, 'ROLLMPI');
 my %CC = ('gnu' => 'gcc', 'intel' => 'icc', 'pgi' => 'pgcc');
 
@@ -135,20 +134,18 @@ SKIP: {
       ok(-l "/opt/modulefiles/applications/.$compilername/fftw/.version",
          "module file for fftw/latest/$compilername installed");
       foreach my $mpi (@MPIS) {
-        foreach my $network (@NETWORKS) {
-          $output = `module load $compiler ${mpi}_$network fftw; $CC{$compilername} -DFFTW3 -I\$FFTWHOME/include -L\$FFTWHOME/lib -o $TESTFILE.$compilername.exe $TESTFILE.c -lfftw3 -lm`;
-          ok(-f "$TESTFILE.$compilername.exe",
-             "compile/link using fftw/latest/$compilername/$mpi");
-          $output = `module load $compiler ${mpi}_$network fftw;./$TESTFILE.$compilername.exe`;
-          like($output, qr/{ {6.00, 0.00} {-2.00, 2.00} {-2.00, 0.00} {-2.00, -2.00} }/, "run using fftw/latest/$compilername/$mpi double precision");
+        $output = `module load $compiler $mpi fftw; $CC{$compilername} -DFFTW3 -I\$FFTWHOME/include -L\$FFTWHOME/lib -o $TESTFILE.$compilername.exe $TESTFILE.c -lfftw3 -lm`;
+        ok(-f "$TESTFILE.$compilername.exe",
+           "compile/link using fftw/latest/$compilername/$mpi");
+        $output = `module load $compiler $mpi fftw;./$TESTFILE.$compilername.exe`;
+        like($output, qr/{ {6.00, 0.00} {-2.00, 2.00} {-2.00, 0.00} {-2.00, -2.00} }/, "run using fftw/latest/$compilername/$mpi double precision");
 
-          $output = `module load $compiler ${mpi}_$network fftw; $CC{$compilername} -DFFTW3 -DFFTW_SINGLE -I\$FFTWHOME/include -L\$FFTWHOME/lib -o $TESTFILE.$compilername.exe $TESTFILE.c -lfftw3f -lm`;
-          ok(-f "$TESTFILE.$compilername.exe",
-             "compile/link using fftw/latest/$compilername/$mpi");
-          $output = `module load $compiler ${mpi}_$network fftw;./$TESTFILE.$compilername.exe`;
-          like($output, qr/{ {6.00, 0.00} {-2.00, 2.00} {-2.00, 0.00} {-2.00, -2.00} }/, "run using fftw/latest/$compilername/$mpi single precision");
+        $output = `module load $compiler $mpi fftw; $CC{$compilername} -DFFTW3 -DFFTW_SINGLE -I\$FFTWHOME/include -L\$FFTWHOME/lib -o $TESTFILE.$compilername.exe $TESTFILE.c -lfftw3f -lm`;
+        ok(-f "$TESTFILE.$compilername.exe",
+           "compile/link using fftw/latest/$compilername/$mpi");
+        $output = `module load $compiler $mpi fftw;./$TESTFILE.$compilername.exe`;
+        like($output, qr/{ {6.00, 0.00} {-2.00, 2.00} {-2.00, 0.00} {-2.00, -2.00} }/, "run using fftw/latest/$compilername/$mpi single precision");
 
-        }
       }
     }
   }
@@ -162,14 +159,12 @@ SKIP: {
       ok(-f "/opt/modulefiles/applications/.$compilername/fftw/2.1.5",
          "module file for fftw/2.1.5/$compilername installed");
       foreach my $mpi (@MPIS) {
-        foreach my $network (@NETWORKS) {
-          $output = `module load $compiler ${mpi}_$network fftw/2.1.5; $CC{$compilername} -I\$FFTWHOME/include -L\$FFTWHOME/lib -o $TESTFILE.$compilername.$mpi.exe $TESTFILE.c -lfftw -lm`;
-          ok(-f "$TESTFILE.$compilername.$mpi.exe",
-             "compile/link using fftw/2.1.5/$compilername/$mpi");
-          $output = `module load $compiler ${mpi}_$network fftw;./$TESTFILE.$compilername.exe`;
-          like($output, qr/{ {6.00, 0.00} {-2.00, 2.00} {-2.00, 0.00} {-2.00, -2.00} }/,
-               "run using fftw/2.1.5/$compilername/$mpi");
-        }
+        $output = `module load $compiler $mpi fftw/2.1.5; $CC{$compilername} -I\$FFTWHOME/include -L\$FFTWHOME/lib -o $TESTFILE.$compilername.$mpi.exe $TESTFILE.c -lfftw -lm`;
+        ok(-f "$TESTFILE.$compilername.$mpi.exe",
+           "compile/link using fftw/2.1.5/$compilername/$mpi");
+        $output = `module load $compiler $mpi fftw;./$TESTFILE.$compilername.exe`;
+        like($output, qr/{ {6.00, 0.00} {-2.00, 2.00} {-2.00, 0.00} {-2.00, -2.00} }/,
+             "run using fftw/2.1.5/$compilername/$mpi");
       }
     }
   }

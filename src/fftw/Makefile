@@ -64,24 +64,13 @@ include Rules.mk
 include pull.mk
 
 CC = gcc
-COMPILE_FLAGS = -O2 -fPIC
-CONFIG_OPTIONS = --enable-openmp --enable-mpi --enable-threads --enable-shared
 FC = gfortran
-MPICC = mpicc
 ifeq ("$(COMPILERNAME)", "intel")
   CC = icc
-  COMPILE_FLAGS = -O3 -fp-model precise -prec_div -prec_sqrt -ftz -xHOST -fPIC
   FC = ifort
 else ifeq ("$(COMPILERNAME)", "pgi")
   CC = pgcc
-  COMPILE_FLAGS = -fast -fpic -Mflushz -Mdaz -Kieee -Mlarge_arrays -fPIC
   FC = pgf77
-endif
-
-ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
-  ifneq ("$(COMPILERNAME)", "gnu")
-    CONFIG_OPTIONS += --enable-avx
-  endif
 endif
 
 COMPILERSETUP =  \
@@ -89,16 +78,24 @@ COMPILERSETUP =  \
   echo === Compiler and version ===; \
   $(CC) --version \
 
-ifeq ("$(ROLLNETWORK)", "eth")
-  MPIMODULE = $(ROLLMPI)
-else
-  MPIMODULE = $(ROLLMPI)_$(ROLLNETWORK)
-endif
-
 MPISETUP = \
-  module load $(MPIMODULE) || true; \
+  module load $(ROLLMPI) || true; \
   echo === MPIHOME ===; \
   echo $${MPIHOME} \
+
+COMPILE_FLAGS = -O2 -fPIC
+CONFIG_OPTIONS = --enable-openmp --enable-mpi --enable-threads --enable-shared
+ifeq ("$(COMPILERNAME)", "intel")
+  COMPILE_FLAGS = -O3 -fp-model precise -prec_div -prec_sqrt -ftz -xHOST -fPIC
+else ifeq ("$(COMPILERNAME)", "pgi")
+  COMPILE_FLAGS = -fast -fpic -Mflushz -Mdaz -Kieee -Mlarge_arrays -fPIC
+endif
+
+ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
+  ifneq ("$(COMPILERNAME)", "gnu")
+    CONFIG_OPTIONS += --enable-avx
+  endif
+endif
 
 build: $(SRC_DIRS)
 	@echo "::: Package $(NAME) build complete :::"
@@ -112,12 +109,12 @@ install::
 	  export F77=$(FC); \
 	  export FFLAGS="$(COMPILE_FLAGS)"; \
 	  cd $(SOURCE_DIR); \
-	  ./configure F77=$(FC) CC=$(CC) MPICC=$(MPICC) \
+	  ./configure F77=$(FC) CC=$(CC) MPICC=mpicc \
 	              --prefix=$(PKGROOT) $(CONFIG_OPTIONS);  \
 	  $(MAKE); \
 	  $(MAKE) prefix=$(ROOT)/$(PKGROOT) install; \
 	  $(MAKE) clean; \
-	  ./configure F77=$(FC) CC=$(CC) MPICC=$(MPICC) \
+	  ./configure F77=$(FC) CC=$(CC) MPICC=mpicc \
 	       --enable-single --prefix=$(PKGROOT) $(CONFIG_OPTIONS);  \
 	  $(MAKE); \
 	  $(MAKE) prefix=$(ROOT)/$(PKGROOT) install;  \

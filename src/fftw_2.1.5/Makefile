@@ -64,17 +64,30 @@ include Rules.mk
 include pull.mk
 
 CC = gcc
-COMPILE_FLAGS = -O2
 F77 = gfortran
-MPICC = mpicc
 ifeq ("$(COMPILERNAME)","intel")
   CC = icc
-  COMPILE_FLAGS = -xHOST -O2
   F77 = ifort
 else ifeq ("$(COMPILERNAME)","pgi")
   CC = pgcc
-  COMPILE_FLAGS = -fast
   F77 = pgf77
+endif
+
+COMPILERSETUP =  \
+  module load $(ROLLCOMPILER) || true; \
+  echo === Compiler and version ===; \
+  $(CC) --version \
+
+MPISETUP = \
+  module load $(ROLLMPI) || true; \
+  echo === MPIHOME ===; \
+  echo $${MPIHOME} \
+
+COMPILE_FLAGS = -O2
+ifeq ("$(COMPILERNAME)","intel")
+  COMPILE_FLAGS = -xHOST -O2
+else ifeq ("$(COMPILERNAME)","pgi")
+  COMPILE_FLAGS = -fast
 endif
 
 ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
@@ -83,22 +96,6 @@ ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
   endif
 endif
 
-COMPILERSETUP =  \
-  module load $(ROLLCOMPILER) || true; \
-  echo === Compiler and version ===; \
-  $(CC) --version \
-
-ifeq ("$(ROLLNETWORK)", "eth")
-  MPIMODULE = $(ROLLMPI)
-else
-  MPIMODULE = $(ROLLMPI)_$(ROLLNETWORK)
-endif
-
-MPISETUP = \
-  module load $(MPIMODULE) || true; \
-  echo === MPIHOME ===; \
-  echo $${MPIHOME} \
-
 build: $(SRC_DIRS)
 	( \
 	  $(COMPILERSETUP); \
@@ -106,7 +103,7 @@ build: $(SRC_DIRS)
 	  cd $(SOURCE_DIR); \
 	  export CFLAGS="$(COMPILE_FLAGS)"; \
 	  export FFLAGS="$(COMPILE_FLAGS)"; \
-	  ./configure F77=$(F77) CC=$(CC) MPICC=$(MPICC) \
+	  ./configure F77=$(F77) CC=$(CC) MPICC=mpicc \
 	              --prefix=$(PKGROOT) --enable-mpi --enable-openmp; \
 	  $(MAKE) \
 	)
