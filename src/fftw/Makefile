@@ -86,16 +86,28 @@ MPISETUP = \
 COMPILE_FLAGS = -O2 -fPIC
 CONFIG_OPTIONS = --enable-openmp --enable-mpi --enable-threads --enable-shared
 ifeq ("$(COMPILERNAME)", "intel")
-  COMPILE_FLAGS = -O3 -fp-model precise -prec_div -prec_sqrt -ftz -xHOST -fPIC
+  COMPILE_FLAGS = -O3 -fp-model precise -prec_div -prec_sqrt -ftz -fPIC
 else ifeq ("$(COMPILERNAME)", "pgi")
   COMPILE_FLAGS = -fast -fpic -Mflushz -Mdaz -Kieee -Mlarge_arrays -fPIC
 endif
 
-ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
-  ifneq ("$(COMPILERNAME)", "gnu")
-    CONFIG_OPTIONS += --enable-avx
+
+AVX_FLAG=
+ifneq ("$(ROLLOPTS)", "$(subst avx2,,$(ROLLOPTS))")
+  ifeq ("$(COMPILERNAME)", "gnu")
+    AVX_FLAG = -mavx2
+  endif
+  ifeq ("$(COMPILERNAME)", "intel")
+    AVX_FLAG = -xcore-avx2
+  endif
+else ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
+  ifeq ("$(COMPILERNAME)", "gnu")
+    AVX_FLAG = -mavx
+  else ifeq ("$(COMPILERNAME)", "intel")
+    AVX_FLAG = -xavx
   endif
 endif
+
 
 build: $(SRC_DIRS)
 	@echo "::: Package $(NAME) build complete :::"
@@ -105,9 +117,9 @@ install::
 	  $(COMPILERSETUP); \
 	  $(MPISETUP); \
 	  export CC=$(CC); \
-	  export CFLAGS="$(COMPILE_FLAGS)"; \
+	  export CFLAGS="$(COMPILE_FLAGS) $(AVX_FLAG)"; \
 	  export F77=$(FC); \
-	  export FFLAGS="$(COMPILE_FLAGS)"; \
+	  export FFLAGS="$(COMPILE_FLAGS) $(AVX_FLAG)"; \
 	  cd $(SOURCE_DIR); \
 	  ./configure F77=$(FC) CC=$(CC) MPICC=mpicc \
 	              --prefix=$(PKGROOT) $(CONFIG_OPTIONS);  \

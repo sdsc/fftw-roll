@@ -85,24 +85,35 @@ MPISETUP = \
 
 COMPILE_FLAGS = -O2
 ifeq ("$(COMPILERNAME)","intel")
-  COMPILE_FLAGS = -xHOST -O2
+  COMPILE_FLAGS = -O2
 else ifeq ("$(COMPILERNAME)","pgi")
   COMPILE_FLAGS = -fast
 endif
 
-ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
+AVX_FLAG=
+ifneq ("$(ROLLOPTS)", "$(subst avx2,,$(ROLLOPTS))")
   ifeq ("$(COMPILERNAME)", "gnu")
-    COMPILE_FLAGS += -mavx
+    AVX_FLAG = -mavx2
+  endif
+  ifeq ("$(COMPILERNAME)", "intel")
+    AVX_FLAG = -xcore-avx2
+  endif
+else ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
+  ifeq ("$(COMPILERNAME)", "gnu")
+    AVX_FLAG = -mavx
+  else ifeq ("$(COMPILERNAME)", "intel")
+    AVX_FLAG = -xavx
   endif
 endif
+
 
 build: $(SRC_DIRS)
 	( \
 	  $(COMPILERSETUP); \
 	  $(MPISETUP); \
 	  cd $(SOURCE_DIR); \
-	  export CFLAGS="$(COMPILE_FLAGS)"; \
-	  export FFLAGS="$(COMPILE_FLAGS)"; \
+	  export CFLAGS="$(COMPILE_FLAGS) $(AVX_FLAG)"; \
+	  export FFLAGS="$(COMPILE_FLAGS) $(AVX_FLAG)"; \
 	  ./configure F77=$(F77) CC=$(CC) MPICC=mpicc \
 	              --prefix=$(PKGROOT) --enable-mpi --enable-openmp; \
 	  $(MAKE) \
