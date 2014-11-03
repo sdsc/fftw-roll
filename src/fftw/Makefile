@@ -94,18 +94,19 @@ endif
 
 AVX_FLAG=
 ifneq ("$(ROLLOPTS)", "$(subst avx2,,$(ROLLOPTS))")
-  CONFIG_OPTIONS += --enable-avx
   ifeq ("$(COMPILERNAME)", "gnu")
+    CONFIG_OPTIONS += --enable-avx
     AVX_FLAG = -mavx2
-  endif
-  ifeq ("$(COMPILERNAME)", "intel")
+  else ifeq ("$(COMPILERNAME)", "intel")
+    CONFIG_OPTIONS += --enable-avx
     AVX_FLAG = -xcore-avx2
   endif
 else ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
-  CONFIG_OPTIONS += --enable-avx
   ifeq ("$(COMPILERNAME)", "gnu")
+    CONFIG_OPTIONS += --enable-avx
     AVX_FLAG = -mavx
   else ifeq ("$(COMPILERNAME)", "intel")
+    CONFIG_OPTIONS += --enable-avx
     AVX_FLAG = -xavx
   endif
 endif

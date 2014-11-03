@@ -94,8 +94,7 @@ AVX_FLAG=
 ifneq ("$(ROLLOPTS)", "$(subst avx2,,$(ROLLOPTS))")
   ifeq ("$(COMPILERNAME)", "gnu")
     AVX_FLAG = -mavx2
-  endif
-  ifeq ("$(COMPILERNAME)", "intel")
+  else ifeq ("$(COMPILERNAME)", "intel")
     AVX_FLAG = -xcore-avx2
   endif
 else ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
