@@ -114,7 +114,7 @@ build: $(SRC_DIRS)
 	  cd $(SOURCE_DIR); \
 	  export CFLAGS="$(COMPILE_FLAGS) $(AVX_FLAG)"; \
 	  export FFLAGS="$(COMPILE_FLAGS) $(AVX_FLAG)"; \
-	  ./configure F77=$(F77) CC=$(CC) MPICC=mpicc \
+	  ./configure --host `bash config.guess` F77=$(F77) CC=$(CC) MPICC=mpicc \
 	              --prefix=$(PKGROOT) --enable-mpi --enable-openmp; \
 	  $(MAKE) \
 	)
