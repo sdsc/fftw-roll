@@ -95,16 +95,16 @@ endif
 AVX_FLAG=
 ifneq ("$(ROLLOPTS)", "$(subst avx2,,$(ROLLOPTS))")
   ifeq ("$(COMPILERNAME)", "gnu")
-    AVX_FLAG = -mavx2
+    AVX_FLAG = -mavx2 --enable-avx
   endif
   ifeq ("$(COMPILERNAME)", "intel")
-    AVX_FLAG = -xcore-avx2
+    AVX_FLAG = -xcore-avx2 --enable-avx
   endif
 else ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
   ifeq ("$(COMPILERNAME)", "gnu")
-    AVX_FLAG = -mavx
+    AVX_FLAG = -mavx --enable-avx
   else ifeq ("$(COMPILERNAME)", "intel")
-    AVX_FLAG = -xavx
+    AVX_FLAG = -xavx --enable-avx
   endif
 endif
 
@@ -121,12 +121,12 @@ install::
 	  export F77=$(FC); \
 	  export FFLAGS="$(COMPILE_FLAGS) $(AVX_FLAG)"; \
 	  cd $(SOURCE_DIR); \
-	  ./configure F77=$(FC) CC=$(CC) MPICC=mpicc \
+	  ./configure x86_64-unknown-linux-gnu F77=$(FC) CC=$(CC) MPICC=mpicc \
 	              --prefix=$(PKGROOT) $(CONFIG_OPTIONS);  \
 	  $(MAKE); \
 	  $(MAKE) prefix=$(ROOT)/$(PKGROOT) install; \
 	  $(MAKE) clean; \
-	  ./configure F77=$(FC) CC=$(CC) MPICC=mpicc \
+	  ./configure x86_64-unknown-linux-gnu F77=$(FC) CC=$(CC) MPICC=mpicc \
 	       --enable-single --prefix=$(PKGROOT) $(CONFIG_OPTIONS);  \
 	  $(MAKE); \
 	  $(MAKE) prefix=$(ROOT)/$(PKGROOT) install;  \
