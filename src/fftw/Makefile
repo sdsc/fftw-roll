@@ -121,12 +121,12 @@ install::
 	  export F77=$(FC); \
 	  export FFLAGS="$(COMPILE_FLAGS) $(AVX_FLAG)"; \
 	  cd $(SOURCE_DIR); \
-	  ./configure x86_64-unknown-linux-gnu F77=$(FC) CC=$(CC) MPICC=mpicc \
+	  ./configure --host `config.guess` F77=$(FC) CC=$(CC) MPICC=mpicc \
 	              --prefix=$(PKGROOT) $(CONFIG_OPTIONS);  \
 	  $(MAKE); \
 	  $(MAKE) prefix=$(ROOT)/$(PKGROOT) install; \
 	  $(MAKE) clean; \
-	  ./configure x86_64-unknown-linux-gnu F77=$(FC) CC=$(CC) MPICC=mpicc \
+	  ./configure --host `config.guess` F77=$(FC) CC=$(CC) MPICC=mpicc \
 	       --enable-single --prefix=$(PKGROOT) $(CONFIG_OPTIONS);  \
 	  $(MAKE); \
 	  $(MAKE) prefix=$(ROOT)/$(PKGROOT) install;  \
