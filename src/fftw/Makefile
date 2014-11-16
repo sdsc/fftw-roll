@@ -128,7 +128,7 @@ install::
 	              --prefix=$(PKGROOT) $(CONFIG_OPTIONS);  \
 	  $(MAKE); \
 	  $(MAKE) prefix=$(ROOT)/$(PKGROOT) install; \
-	  $(MAKE) clean; \
+	  $(MAKE) distclean; \
 	  ./configure --host `bash config.guess` F77=$(FC) CC=$(CC) MPICC=mpicc \
 	       --enable-single --prefix=$(PKGROOT) $(CONFIG_OPTIONS);  \
 	  $(MAKE); \
