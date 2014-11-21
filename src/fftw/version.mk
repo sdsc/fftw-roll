@@ -10,7 +10,7 @@ MPINAME := $(firstword $(subst /, ,$(ROLLMPI)))
 
 NAME           = fftw_$(COMPILERNAME)_$(ROLLMPI)
 VERSION        = 3.3.4
-RELEASE        = 1
+RELEASE        = 2
 PKGROOT        = /opt/fftw/$(VERSION)/$(COMPILERNAME)/$(ROLLMPI)
 
 SRC_SUBDIR     = fftw
