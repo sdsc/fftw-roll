@@ -61,27 +61,8 @@ RPM.EXTRAS=%define __os_install_post /usr/lib/rpm/brp-compress
 
 -include $(ROCKSROOT)/etc/Rules.mk
 include Rules.mk
-include pull.mk
-
-CC = gcc
-F77 = gfortran
-ifeq ("$(COMPILERNAME)","intel")
-  CC = icc
-  F77 = ifort
-else ifeq ("$(COMPILERNAME)","pgi")
-  CC = pgcc
-  F77 = pgf77
-endif
-
-COMPILERSETUP =  \
-  module load $(ROLLCOMPILER) || true; \
-  echo === Compiler and version ===; \
-  $(CC) --version \
-
-MPISETUP = \
-  module load $(ROLLMPI) || true; \
-  echo === MPIHOME ===; \
-  echo $${MPIHOME} \
+include $(SDSCDEVEL)/Pull.mk
+include $(SDSCDEVEL)/Rules.mk
 
 COMPILE_FLAGS = -O2
 ifeq ("$(COMPILERNAME)","intel")
@@ -105,11 +86,28 @@ else ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
   endif
 endif
 
+LICENSE_FILES = $(SOURCE_DIR)/{COPYING,COPYRIGHT}
+
+$(NAME).spec: DESCRIPTION LICENSE
+
+DESCRIPTION:
+	$(MODULE_LOAD_CC); \
+	( \
+	  $(DESCRIBE_PKG); \
+	  $(DESCRIBE_CC); \
+	  $(DESCRIBE_MPI) \
+	) > $@
+
+LICENSE: $(SRC_DIRS)
+	if ! grep -q "GNU General Public License" $(SOURCE_DIR)/COPYRIGHT; then \
+	  exit 2; \
+	fi
+	echo GPLv2+ > $@
 
 build: $(SRC_DIRS)
 	( \
-	  $(COMPILERSETUP); \
-	  $(MPISETUP); \
+	  $(MODULE_LOAD_CC); \
+	  $(MODULE_LOAD_MPI); \
 	  cd $(SOURCE_DIR); \
 	  export CFLAGS="$(COMPILE_FLAGS) $(AVX_FLAG)"; \
 	  export FFLAGS="$(COMPILE_FLAGS) $(AVX_FLAG)"; \
@@ -124,7 +122,8 @@ install::
 	  cd $(SOURCE_DIR); \
 	  make prefix=$(ROOT)/$(PKGROOT) install \
 	)
+	$(INSTALL_LICENSE_FILES)
 	@echo "::: Package $(NAME) install complete :::"
 
 clean::
-	rm -rf $(SOURCE_DIR) dist
+	rm -rf $(SOURCE_DIR) DESCRIPTION LICENSE

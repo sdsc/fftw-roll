@@ -8,9 +8,9 @@ ifndef ROLLMPI
 endif
 MPINAME := $(firstword $(subst /, ,$(ROLLMPI)))
 
-NAME           = fftw_$(COMPILERNAME)_$(ROLLMPI)
+NAME           = sdsc-fftw_$(COMPILERNAME)_$(ROLLMPI)
 VERSION        = 3.3.4
-RELEASE        = 2
+RELEASE        = 3
 PKGROOT        = /opt/fftw/$(VERSION)/$(COMPILERNAME)/$(ROLLMPI)
 
 SRC_SUBDIR     = fftw
