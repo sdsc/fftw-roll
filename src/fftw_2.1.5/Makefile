@@ -86,8 +86,6 @@ else ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
   endif
 endif
 
-LICENSE_FILES = $(SOURCE_DIR)/{COPYING,COPYRIGHT}
-
 $(NAME).spec: DESCRIPTION LICENSE
 
 DESCRIPTION:
@@ -99,9 +97,7 @@ DESCRIPTION:
 	) > $@
 
 LICENSE: $(SRC_DIRS)
-	if ! grep -q "GNU General Public License" $(SOURCE_DIR)/COPYRIGHT; then \
-	  exit 2; \
-	fi
+	$(CHECK_LICENSE_FILES)
 	echo GPLv2+ > $@
 
 build: $(SRC_DIRS)
