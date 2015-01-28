@@ -12,9 +12,9 @@ Copyright (c) 2000 - 2014 The Regents of the University of California.
 All rights reserved. Rocks(r) v5.1 www.rocksclusters.org
 </copyright>
 
-<package>fftw_2.1.5_COMPILERNAME_MPINAME</package>
-<package>fftw_COMPILERNAME_MPINAME</package>
-<package>fftw-modules_COMPILERNAME</package>
-<package>fftw-roll-test</package>
+<package>sdsc-fftw_2.1.5_COMPILERNAME_MPINAME</package>
+<package>sdsc-fftw_COMPILERNAME_MPINAME</package>
+<package>sdsc-fftw-modules_COMPILERNAME</package>
+<package>sdsc-fftw-roll-test</package>
 
 </kickstart>
