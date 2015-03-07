@@ -1,5 +1,6 @@
-ROLLNAME = fftw
-RELEASE  = 4
-COLOR    = orange
+ROLLNAME	= fftw
+VERSION        :=$(shell bash version.sh -v)
+RELEASE        :=$(shell bash version.sh -h)
+COLOR		= orange
 
 REDHAT.ROOT = $(PWD)
