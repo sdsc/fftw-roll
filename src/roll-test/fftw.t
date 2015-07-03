@@ -129,7 +129,7 @@ SKIP: {
     my $compilername = (split('/', $compiler))[0];
     SKIP : {
       $output = `find /opt/fftw -name include | grep -vs 2.1.5`;
-      skip "fftw latest/$compilername not installed", 3
+      skip "fftw latest/$compilername not installed", 4
         if $output !~ m#/$compilername/#;
       ok(-l "/opt/modulefiles/applications/.$compilername/fftw/.version",
          "module file for fftw/latest/$compilername installed");
@@ -147,6 +147,10 @@ SKIP: {
         like($output, qr/{ {6.00, 0.00} {-2.00, 2.00} {-2.00, 0.00} {-2.00, -2.00} }/, "run using fftw/latest/$compilername/$mpi single precision");
 
       }
+      $output = `module load $compiler fftw; echo \$FFTWHOME 2>&1`;
+      my $firstmpi = $MPIS[0];
+      $firstmpi =~ s#/.*##;
+      like($output, qr#/opt/fftw/.*/$compiler/$firstmpi#, 'fftw modulefile defaults to first mpi');
     }
   }
 

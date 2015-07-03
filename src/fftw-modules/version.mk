@@ -7,7 +7,7 @@ PACKAGE     = fftw
 CATEGORY    = applications
 
 NAME        = sdsc-$(PACKAGE)-modules_$(COMPILERNAME)
-RELEASE     = 9
+RELEASE     = 10
 PKGROOT     = /opt/modulefiles/$(CATEGORY)/.$(COMPILERNAME)/$(PACKAGE)
 
 VERSION_SRC = $(REDHAT.ROOT)/src/$(PACKAGE)/version.mk
