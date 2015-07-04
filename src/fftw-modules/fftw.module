@@ -6,14 +6,13 @@ module-whatis "Compiler: COMPILERNAME"
 module-whatis "MPI Flavors: ROLLMPI"
 # Look for MPI flavor in LOADEDMODULES. If no MPI module is loaded, default to
 # first element in ROLLMPI.
-set mpi [lindex [list ROLLMPI] 0]
+set mpi [lindex [split "ROLLMPI" "/ "] 0]
 foreach {module} [split $::env(LOADEDMODULES) :] {
   set module [lindex [split $module /] 0]
   if {[regexp [format {%s(/|\s|$)} $module] "ROLLMPI"]} {
     set mpi $module
   }
 }
-set mpi [lindex [split $mpi /] 0]
 set fftwHome /opt/fftw/VERSION/COMPILERNAME/$mpi
 setenv FFTWHOME $fftwHome
 prepend-path PATH $fftwHome/bin
