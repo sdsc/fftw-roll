@@ -101,6 +101,9 @@ LICENSE: $(SRC_DIRS)
 	echo GPLv2+ > $@
 
 build: $(SRC_DIRS)
+	@echo "::: Package $(NAME) build complete :::"
+
+install::
 	( \
 	  $(MODULE_LOAD_CC); \
 	  $(MODULE_LOAD_MPI); \
@@ -108,15 +111,19 @@ build: $(SRC_DIRS)
 	  export CFLAGS="$(COMPILE_FLAGS) $(AVX_FLAG)"; \
 	  export FFLAGS="$(COMPILE_FLAGS) $(AVX_FLAG)"; \
 	  ./configure --host `bash config.guess` F77=$(F77) CC=$(CC) MPICC=mpicc \
-	              --prefix=$(PKGROOT) --enable-mpi --enable-openmp; \
-	  $(MAKE) \
-	)
-	@echo "::: Package $(NAME) build complete :::"
-
-install::
-	( \
-	  cd $(SOURCE_DIR); \
-	  make prefix=$(ROOT)/$(PKGROOT) install \
+	              --prefix=$(PKGROOT) --enable-mpi --enable-openmp --enable-threads; \
+	  $(MAKE); \
+	  $(MAKE) prefix=$(ROOT)/$(PKGROOT) install; \
+	  $(MAKE) clean; \
+	  ./configure --host `bash config.guess` F77=$(F77) CC=$(CC) MPICC=mpicc \
+	              --prefix=$(PKGROOT) --enable-mpi --enable-openmp --enable-threads --enable-type-prefix; \
+	  $(MAKE); \
+	  $(MAKE) prefix=$(ROOT)/$(PKGROOT) install; \
+	  $(MAKE) clean; \
+	  ./configure --host `bash config.guess` F77=$(F77) CC=$(CC) MPICC=mpicc \
+	              --prefix=$(PKGROOT) --enable-mpi --enable-openmp --enable-threads --enable-type-prefix --enable-float; \
+	  $(MAKE); \
+	  $(MAKE) prefix=$(ROOT)/$(PKGROOT) install; \
 	)
 	$(INSTALL_LICENSE_FILES)
 	@echo "::: Package $(NAME) install complete :::"
