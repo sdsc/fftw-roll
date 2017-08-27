@@ -14,7 +14,7 @@ All rights reserved. Rocks(r) v5.1 www.rocksclusters.org
 
 <package>sdsc-fftw_2.1.5_COMPILERNAME_MPINAME</package>
 <package>sdsc-fftw_COMPILERNAME_MPINAME</package>
-<package>sdsc-fftw-modules_COMPILERNAME</package>
+<package>sdsc-fftw-modules</package>
 <package>sdsc-fftw-roll-test</package>
 
 </kickstart>

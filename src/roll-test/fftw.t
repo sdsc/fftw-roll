@@ -123,56 +123,49 @@ foreach my $compiler (@COMPILERS) {
   }
 }
 
-SKIP: {
+foreach my $compiler (@COMPILERS) {
+  my $compilername = (split('/', $compiler))[0];
+  foreach my $mpi (@MPIS) {
+    $output = `module load $compiler $mpi fftw; $CC{$compilername} -DFFTW3 -I\$FFTWHOME/include -L\$FFTWHOME/lib -o $TESTFILE.$compilername.exe $TESTFILE.c -lfftw3 -lm`;
+    ok(-f "$TESTFILE.$compilername.exe",
+       "compile/link using fftw/latest/$compilername/$mpi");
+    $output = `module load $compiler $mpi fftw;./$TESTFILE.$compilername.exe`;
+    like($output, qr/{ {6.00, 0.00} {-2.00, 2.00} {-2.00, 0.00} {-2.00, -2.00} }/, "run using fftw/latest/$compilername/$mpi double precision");
 
-  foreach my $compiler (@COMPILERS) {
-    my $compilername = (split('/', $compiler))[0];
-    SKIP : {
-      $output = `find /opt/fftw -name include | grep -vs 2.1.5`;
-      skip "fftw latest/$compilername not installed", 4
-        if $output !~ m#/$compilername/#;
-      ok(-l "/opt/modulefiles/applications/.$compilername/fftw/.version",
-         "module file for fftw/latest/$compilername installed");
-      foreach my $mpi (@MPIS) {
-        $output = `module load $compiler $mpi fftw; $CC{$compilername} -DFFTW3 -I\$FFTWHOME/include -L\$FFTWHOME/lib -o $TESTFILE.$compilername.exe $TESTFILE.c -lfftw3 -lm`;
-        ok(-f "$TESTFILE.$compilername.exe",
-           "compile/link using fftw/latest/$compilername/$mpi");
-        $output = `module load $compiler $mpi fftw;./$TESTFILE.$compilername.exe`;
-        like($output, qr/{ {6.00, 0.00} {-2.00, 2.00} {-2.00, 0.00} {-2.00, -2.00} }/, "run using fftw/latest/$compilername/$mpi double precision");
+    $output = `module load $compiler $mpi fftw; $CC{$compilername} -DFFTW3 -DFFTW_SINGLE -I\$FFTWHOME/include -L\$FFTWHOME/lib -o $TESTFILE.$compilername.exe $TESTFILE.c -lfftw3f -lm`;
+    ok(-f "$TESTFILE.$compilername.exe",
+       "compile/link using fftw/latest/$compilername/$mpi");
+    $output = `module load $compiler $mpi fftw;./$TESTFILE.$compilername.exe`;
+    like($output, qr/{ {6.00, 0.00} {-2.00, 2.00} {-2.00, 0.00} {-2.00, -2.00} }/, "run using fftw/latest/$compilername/$mpi single precision");
 
-        $output = `module load $compiler $mpi fftw; $CC{$compilername} -DFFTW3 -DFFTW_SINGLE -I\$FFTWHOME/include -L\$FFTWHOME/lib -o $TESTFILE.$compilername.exe $TESTFILE.c -lfftw3f -lm`;
-        ok(-f "$TESTFILE.$compilername.exe",
-           "compile/link using fftw/latest/$compilername/$mpi");
-        $output = `module load $compiler $mpi fftw;./$TESTFILE.$compilername.exe`;
-        like($output, qr/{ {6.00, 0.00} {-2.00, 2.00} {-2.00, 0.00} {-2.00, -2.00} }/, "run using fftw/latest/$compilername/$mpi single precision");
-
-      }
-      $output = `module load $compiler fftw; echo \$FFTWHOME 2>&1`;
-      my $firstmpi = $MPIS[0];
-      $firstmpi =~ s#/.*##;
-      like($output, qr#/opt/fftw/.*/$compiler/$firstmpi#, 'fftw modulefile defaults to first mpi');
-    }
   }
-
-  foreach my $compiler (@COMPILERS) {
-    my $compilername = (split('/', $compiler))[0];
-    SKIP: {
-      $output = `find /opt/fftw -name include | grep 2.1.5`;
-      skip "fftw 2.1.5/$compilername not installed", 3
-        if $output !~ m#/$compilername/#;
-      ok(-f "/opt/modulefiles/applications/.$compilername/fftw/2.1.5",
-         "module file for fftw/2.1.5/$compilername installed");
-      foreach my $mpi (@MPIS) {
-        $output = `module load $compiler $mpi fftw/2.1.5; $CC{$compilername} -I\$FFTWHOME/include -L\$FFTWHOME/lib -o $TESTFILE.$compilername.$mpi.exe $TESTFILE.c -lfftw -lm`;
-        ok(-f "$TESTFILE.$compilername.$mpi.exe",
-           "compile/link using fftw/2.1.5/$compilername/$mpi");
-        $output = `module load $compiler $mpi fftw;./$TESTFILE.$compilername.exe`;
-        like($output, qr/{ {6.00, 0.00} {-2.00, 2.00} {-2.00, 0.00} {-2.00, -2.00} }/,
-             "run using fftw/2.1.5/$compilername/$mpi");
-      }
-    }
-  }
-
+  $output = `module load $compiler fftw; echo \$FFTWHOME 2>&1`;
+  my $firstmpi = $MPIS[0];
+  $firstmpi =~ s#/.*##;
+  like($output, qr#/opt/fftw/.*/$compiler/$firstmpi#, 'fftw modulefile defaults to first mpi');
 }
+
+foreach my $compiler (@COMPILERS) {
+  my $compilername = (split('/', $compiler))[0];
+  foreach my $mpi (@MPIS) {
+    $output = `module load $compiler $mpi fftw/2.1.5; $CC{$compilername} -I\$FFTWHOME/include -L\$FFTWHOME/lib -o $TESTFILE.$compilername.$mpi.exe $TESTFILE.c -lfftw -lm`;
+    ok(-f "$TESTFILE.$compilername.$mpi.exe",
+       "compile/link using fftw/2.1.5/$compilername/$mpi");
+    $output = `module load $compiler $mpi fftw;./$TESTFILE.$compilername.exe`;
+    like($output, qr/{ {6.00, 0.00} {-2.00, 2.00} {-2.00, 0.00} {-2.00, -2.00} }/,
+         "run using fftw/2.1.5/$compilername/$mpi");
+  }
+}
+
+`/bin/ls /opt/modulefiles/applications/fftw/[3-9]* 2>&1`;
+ok($? == 0, "fftw/latest module installed");
+`/bin/ls /opt/modulefiles/applications/fftw/.version.[3-9]* 2>&1`;
+ok($? == 0, "fftw/latest version module installed");
+ok(-l "/opt/modulefiles/applications/fftw/.version",
+   "fftw version module link created");
+`/bin/ls /opt/modulefiles/applications/fftw/2.1.5 2>&1`;
+ok($? == 0, "fftw/2.1.5 module installed");
+`/bin/ls /opt/modulefiles/applications/fftw/.version.2.1.5 2>&1`;
+ok($? == 0, "fftw/2.1.5 version module installed");
 
 `rm -f $TESTFILE*`;
