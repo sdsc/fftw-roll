@@ -10,7 +10,7 @@ MPINAME := $(firstword $(subst /, ,$(ROLLMPI)))
 
 NAME           = sdsc-fftw_$(COMPILERNAME)_$(ROLLMPI)
 VERSION        = 3.3.4
-RELEASE        = 3
+RELEASE        = 4
 PKGROOT        = /opt/fftw/$(VERSION)/$(COMPILERNAME)/$(ROLLMPI)
 
 SRC_SUBDIR     = fftw
@@ -24,3 +24,4 @@ SOURCE_DIR     = $(SOURCE_PKG:%.$(SOURCE_SUFFIX)=%)
 TAR_GZ_PKGS    = $(SOURCE_PKG)
 
 RPM.EXTRAS     = AutoReq:No
+RPM.PREFIX     = $(PKGROOT)
