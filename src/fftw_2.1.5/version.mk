@@ -10,7 +10,7 @@ MPINAME := $(firstword $(subst /, ,$(ROLLMPI)))
 
 NAME           = sdsc-fftw_2.1.5_$(COMPILERNAME)_$(MPINAME)
 VERSION        = 2.1.5
-RELEASE        = 11
+RELEASE        = 12
 PKGROOT        = /opt/fftw/$(VERSION)/$(COMPILERNAME)/$(ROLLMPI)
 
 SRC_SUBDIR     = fftw_2.1.5
@@ -23,5 +23,5 @@ SOURCE_DIR     = $(SOURCE_PKG:%.$(SOURCE_SUFFIX)=%)
 
 TAR_GZ_PKGS    = $(SOURCE_PKG)
 
-RPM.EXTRAS     = AutoReq:No
+RPM.EXTRAS     = "AutoProv:No\\nAutoReq:No\\n%define __os_install_post /usr/lib/rpm/brp-compress"
 RPM.PREFIX     = $(PKGROOT)
