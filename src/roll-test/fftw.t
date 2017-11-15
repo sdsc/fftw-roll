@@ -142,7 +142,7 @@ foreach my $compiler (@COMPILERS) {
   $output = `module load $compiler fftw; echo \$FFTWHOME 2>&1`;
   my $firstmpi = $MPIS[0];
   $firstmpi =~ s#/.*##;
-  like($output, qr#/opt/fftw/.*/$compiler/$firstmpi#, 'fftw modulefile defaults to first mpi');
+  like($output, qr#/opt/fftw/.*/$compilername/$firstmpi#, 'fftw modulefile defaults to first mpi');
 }
 
 foreach my $compiler (@COMPILERS) {

@@ -70,23 +70,12 @@ else ifeq ("$(COMPILERNAME)", "pgi")
   COMPILE_FLAGS = -fast -fpic -Mflushz -Mdaz -Kieee -Mlarge_arrays -fPIC
 endif
 
-AVX_FLAG=
-ifneq ("$(ROLLOPTS)", "$(subst avx2,,$(ROLLOPTS))")
-  ifeq ("$(COMPILERNAME)", "gnu")
+ifneq ("$(COMPILERNAME)","pgi")
+ ifneq ("$(ROLLOPTS)", "$(subst avx2,,$(ROLLOPTS))")
+    CONFIG_OPTIONS += --enable-avx2
+ else ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
     CONFIG_OPTIONS += --enable-avx
-    AVX_FLAG = -mavx2
-  else ifeq ("$(COMPILERNAME)", "intel")
-    CONFIG_OPTIONS += --enable-avx
-    AVX_FLAG = -xcore-avx2
-  endif
-else ifneq ("$(ROLLOPTS)", "$(subst avx,,$(ROLLOPTS))")
-  ifeq ("$(COMPILERNAME)", "gnu")
-    CONFIG_OPTIONS += --enable-avx
-    AVX_FLAG = -mavx
-  else ifeq ("$(COMPILERNAME)", "intel")
-    CONFIG_OPTIONS += --enable-avx
-    AVX_FLAG = -xavx
-  endif
+ endif
 endif
 
 $(NAME).spec: DESCRIPTION LICENSE
@@ -111,9 +100,9 @@ install::
 	  $(MODULE_LOAD_CC); \
 	  $(MODULE_LOAD_MPI); \
 	  export CC=$(CC); \
-	  export CFLAGS="$(COMPILE_FLAGS) $(AVX_FLAG)"; \
+	  export CFLAGS="$(COMPILE_FLAGS)"; \
 	  export F77=$(FC); \
-	  export FFLAGS="$(COMPILE_FLAGS) $(AVX_FLAG)"; \
+	  export FFLAGS="$(COMPILE_FLAGS)"; \
 	  cd $(SOURCE_DIR); \
 	  ./configure --host `bash config.guess` F77=$(FC) CC=$(CC) MPICC=mpicc \
 	              --prefix=$(PKGROOT) $(CONFIG_OPTIONS);  \
