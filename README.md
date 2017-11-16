@@ -87,7 +87,7 @@ In addition to the software itself, the roll installs package environment
 module files in:
 
 ```shell
-/opt/modulefiles/applications/{apbs,cp2k,gromacs,lammps,namd}
+/opt/modulefiles/applications/fftw
 ```
 
 
