@@ -60,7 +60,6 @@ the `ROLLMPI` variable.  The default values are "gnu" and "rocks-openmpi".
 For gnu compilers, the roll also supports a `ROLLOPTS` make variable value of
 'avx', indicating that the target architecture supports AVX instructions.
 
-
 ## Installation
 
 To install, execute these instructions on a Rocks frontend:
@@ -70,14 +69,25 @@ To install, execute these instructions on a Rocks frontend:
 % rocks enable roll fftw
 % cd /export/rocks/install
 % rocks create distro
-% rocks run roll fftw | bash
 ```
 
-In addition to the software itself, the roll installs fftw environment
+Subsequent installs of compute and login nodes will then include the contents
+of the fftw-roll.  To avoid cluttering the cluster frontend with unused
+software, the fftw-roll is configured to install only on compute and
+login nodes. To force installation on your frontend, run this command after
+adding the fftw-roll to your distro
+
+```shell
+% rocks run roll fftw host=NAME | bash
+```
+
+where NAME is the DNS name of a compute or login node in your cluster.
+
+In addition to the software itself, the roll installs package environment
 module files in:
 
 ```shell
-/opt/modulefiles/applications/.(compiler)/fftw
+/opt/modulefiles/applications/fftw
 ```
 
 

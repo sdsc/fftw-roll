@@ -12,10 +12,17 @@ Copyright (c) 2000 - 2017 The Regents of the University of California.
 All rights reserved. Rocks(r) v7 www.rocksclusters.org
 </copyright>
 
-<edge from="base">
+<edge from="login">
   <to>fftw-common</to>
 </edge>
-<order from="base">
+<order from="login">
+  <tail>fftw-common</tail>
+</order>
+
+<edge from="compute">
+  <to>fftw-common</to>
+</edge>
+<order from="compute">
   <tail>fftw-common</tail>
 </order>
 
